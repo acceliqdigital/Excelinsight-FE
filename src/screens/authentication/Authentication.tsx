@@ -20,7 +20,7 @@ export default function Authentication() {
 				</div>
 			</div>
 			<div className="bg-white flex flex-col justify-center items-center grow">
-				<div>
+				<div className="w-1/2">
 					<Outlet />
 				</div>
 			</div>

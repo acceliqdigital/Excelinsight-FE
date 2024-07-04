@@ -11,6 +11,8 @@ export default {
       "primary-background": colors.BACKGROUND_COLOR,
       "primary-theme": colors.PRIMARY_THEME,
       white: colors.WHITE,
+      black: colors.BLACK,
+      "link-blue": colors.LINK,
     },
     fontSize: {
       "2xl": "5rem",
