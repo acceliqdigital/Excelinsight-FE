@@ -1,3 +1,4 @@
+#syntax=docker/dockerfile:1
 # Development stage
 FROM node:20.15.0-alpine as development
 
@@ -16,7 +17,7 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 # Expose the development server port (e.g., 3000)
-EXPOSE 8005
+EXPOSE 8060
 
 # Start the development server
 CMD ["npm", "run", "dev"]
