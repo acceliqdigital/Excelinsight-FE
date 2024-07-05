@@ -1,4 +1,4 @@
-name: Deployment of ExcelInsight_BE
+name: Deployment of ExcelInsight_FE
 
 on:
   push:
