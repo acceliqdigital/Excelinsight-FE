@@ -39,6 +39,18 @@ export interface CustomTextAreaProp {
   inputStyles?: CSSProperties;
 }
 
+export interface UploadFormikProps {
+  'excel-file-1': null | File,
+  'excel-file-2': null | File,
+  'excel-file-3': null | File,
+  'text-file-1': null | File,
+  'text-file-2': null | File,
+  businessModelDescription: string,
+  businessInsightsReport: string,
+  outputFormatDescription: string,
+  uploadStage: 'upload' |  'formatSpecification' | 'columnDiscard' | 'discardedColumnView' | 'processing' | 'discrepencyDisplay'
+}
+
 export interface CustomFileUploadProp {
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;

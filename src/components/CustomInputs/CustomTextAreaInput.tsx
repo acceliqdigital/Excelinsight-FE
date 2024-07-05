@@ -7,7 +7,7 @@ export default function CustomTextAreaInput({
   defaultValue='',
   name,
   value,
-  placeholder='',
+  placeholder='Type here...',
   handleChange,
   disabled = false,
   inputStyles,

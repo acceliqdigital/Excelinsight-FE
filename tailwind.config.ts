@@ -24,6 +24,15 @@ export default {
       "md-1": "14px", // 16px
       sm: "12px", // 12px
     },
+    lineHeight: {
+      "2xl": "5rem",
+      xl: "48px", // 48px
+      lg: "32px", // 32px
+      "lg-1": "2rem", // 24px
+      md: "18px", // 18px
+      "md-1": "14px", // 16px
+      sm: "12px", // 12px
+    },
     screens: {
       'sm-1': '520px',
       // => @media (min-width: 520px) { ... },
