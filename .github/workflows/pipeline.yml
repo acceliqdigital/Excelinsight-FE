@@ -1,0 +1,31 @@
+name: Deployment of ExcelInsight_FE
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    runs-on: bolt
+    
+    steps:
+      - uses: actions/checkout@v4 
+
+  CleanUp:
+    name: Deleting cache files
+    runs-on: bolt
+    needs: build
+
+    steps:
+      - name: Clean
+        run: sudo docker system prune -f --all
+
+  Deploy:
+    name: Build and Deploy
+    runs-on: bolt
+    needs: CleanUp
+
+    steps: 
+      - run: sudo docker compose -f docker-compose.dev.yml up -d --build
