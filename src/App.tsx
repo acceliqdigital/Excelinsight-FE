@@ -7,13 +7,18 @@ import LoginForm from '@screens/authentication/AuthComponents/LoginForm'
 import ForgotPassword from '@screens/authentication/AuthComponents/ForgotPassword'
 import ResetPassword from '@screens/authentication/AuthComponents/ResetPassword'
 import ProfileDetails from '@screens/authentication/AuthComponents/ProfileDetails'
+import Dashboard from './screens/Dashboard'
+import Upload from '@screens/Upload'
 
 function App() {
   return (
     <>
       <Routes>
         <Route path={routes.HOME} >
-          <Route index element={<div>home</div>} />
+          <Route element={<Dashboard />}>
+            <Route index element={<div>Dashboard</div>} />
+            <Route path={routes.UPLOAD} element={<Upload />} />
+          </Route>
           <Route path={routes.AUTH} element={<Authentication />}>
             <Route index element={<LoginForm />} />
             <Route path={routes.SIGNUP} element={<SignupForm />} />

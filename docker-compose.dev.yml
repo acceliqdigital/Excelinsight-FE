@@ -12,3 +12,4 @@ services:
     ports:
       - 8060:8060
     container_name: excelinsight-web-fe-cont
+    restart: always

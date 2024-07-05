@@ -13,6 +13,7 @@ export default {
       white: colors.WHITE,
       black: colors.BLACK,
       "link-blue": colors.LINK,
+      "grey": colors.GREY,
     },
     fontSize: {
       "2xl": "5rem",
@@ -71,7 +72,9 @@ export default {
       },
       padding: {
         basic: "0.5rem",
+        "basic-1": "0.7rem",
         moderate: "1rem",
+        "moderate-1": "1.2rem",
         large: "1.5rem",
         xLarge: "3rem",
       },
