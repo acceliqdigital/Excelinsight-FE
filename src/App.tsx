@@ -1,5 +1,4 @@
 import { Route, Routes } from 'react-router-dom'
-import './App.css'
 import { routes } from './utilities/routes'
 import Authentication from "@screens/authentication/Authentication"
 import SignupForm from '@screens/authentication/AuthComponents/SignupForm'
@@ -9,10 +8,13 @@ import ResetPassword from '@screens/authentication/AuthComponents/ResetPassword'
 import ProfileDetails from '@screens/authentication/AuthComponents/ProfileDetails'
 import Dashboard from './screens/Dashboard'
 import Upload from '@screens/Upload'
+import { ToastContainer } from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <>
+      <ToastContainer />
       <Routes>
         <Route path={routes.HOME} >
           <Route element={<Dashboard />}>

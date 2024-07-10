@@ -14,12 +14,14 @@ export default {
       black: colors.BLACK,
       "link-blue": colors.LINK,
       "grey": colors.GREY,
+      'yellow': colors.YELLOW
     },
     fontSize: {
       "2xl": "5rem",
       xl: "48px", // 48px
       lg: "32px", // 32px
       "lg-1": "24px", // 24px
+      "lg-2": "24px", // 20px
       md: "18px", // 18px
       "md-1": "14px", // 16px
       sm: "12px", // 12px
@@ -87,6 +89,14 @@ export default {
         large: "1.5rem",
         xLarge: "3rem",
       },
+      gap: {
+        basic: "0.5rem",
+        "basic-1": "0.7rem",
+        moderate: "1rem",
+        "moderate-1": "1.2rem",
+        large: "1.5rem",
+        xLarge: "3rem",
+      }
     },
   },
   plugins: [],
