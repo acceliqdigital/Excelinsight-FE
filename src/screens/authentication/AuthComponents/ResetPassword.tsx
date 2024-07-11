@@ -18,7 +18,7 @@ export default function ResetPassword(){
 		},
 		onSubmit: (values) => {
 			console.log(values)
-			navigate(`${routes.HOME}${routes.AUTH}`)
+			navigate(`${routes.HOME}`)
 		}
 	})
 	return (

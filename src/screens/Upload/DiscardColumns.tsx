@@ -27,6 +27,10 @@ export default function DiscardColumns({
 	const [excelHeaders, setExcelHeaders] = useState<ExcelHeadersProps | null>(null)
 	const [loadingExcelData, setLoadingExcelData] = useState<boolean>(false)
 	useEffect(() => {
+		setExcelHeaders({
+			'file': []
+		})
+		return;
 		(async () => {
 			setLoadingExcelData(true)
 			const excelDataStore = {} as ExcelHeadersProps
@@ -62,7 +66,6 @@ export default function DiscardColumns({
 			}
 		})().then(() => setLoadingExcelData(false))
 	}, [formik.values.dataFiles])
-	console.log(excelHeaders)
 	return (
 		<>
       <div className="flex flex-row">
@@ -93,21 +96,45 @@ export default function DiscardColumns({
 										}}
 										className="grid gap-y-2"
 										>
+										<h4 className="text-lg-2">Merged Excel.xls</h4>
 										{
-											formik.values.dataFiles.map((dataFile) => {
-												return (
-													<h4 key={`${dataFile?.name}`} className="text-lg-2">{dataFile?.name}</h4>
-												)
-											})
+											// formik.values.dataFiles.map((dataFile) => {
+											// 	return (
+											// 		<h4 key={`${dataFile?.name}`} className="text-lg-2">{dataFile?.name}</h4>
+											// 	)
+											// })
 										}
 									</div>
 									<div className="border-b my-basic" />
 									<div
 									style={{
-										gridTemplateColumns: `repeat(${Object.keys(excelHeaders).length}, minmax(0, 1fr))`
+										// gridTemplateColumns: `repeat(${Object.keys(excelHeaders).length}, minmax(0, 1fr))`
+										gridTemplateColumns: `repeat(${1}, minmax(0, 1fr))`
 									}}
 									className="grid gap-2">
 										{
+											formik.values.mergedColummns.length > 0 &&
+											<ColumnSelection handleSelectionForIndex={(i) => {
+												// setExcelHeaders({
+												// 	...excelHeaders,
+												// 	[fileName]: excelHeaders[fileName].map((header, index) => i == index ? {
+												// 		...header,
+												// 		selectionIsPrivate: !header.selectionIsPrivate
+												// 	} : header)
+												// })
+												formik.values.mergedColummns
+												formik.setFieldValue('mergedColummns', formik.values.mergedColummns.map((header, columnIndex) => {
+													if(columnIndex == i){
+														return {
+															...header,
+															selectionIsPrivate: !header.selectionIsPrivate
+														}
+													}
+													return header
+												}))
+											}} headerList={formik.values.mergedColummns} />
+										}
+										{/* {
 											Object.keys(excelHeaders).map((fileName, fileIndex) => {
 												return <ColumnSelection key={`excelColumn${fileIndex}`} handleSelectionForIndex={(i) => {
 													setExcelHeaders({
@@ -119,7 +146,7 @@ export default function DiscardColumns({
 													})
 												}} headerList={excelHeaders[fileName]} />
 											})
-										}
+										} */}
 									</div>
 								</>
 							)
