@@ -22,7 +22,7 @@ jobs:
       - name: Clean
         run: |
           whoami
-          sudo docker system prune -f --all
+          echo "${{ secrets.SUDO_PASSWORD }} | sudo -S docker system prune -f --all
 
   Deploy:
     name: Build and Deploy
