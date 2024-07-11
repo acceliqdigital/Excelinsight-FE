@@ -20,6 +20,7 @@ jobs:
 
     steps:
       - name: Clean
+        run: whoami
         run: sudo docker system prune -f --all
 
   Deploy:
