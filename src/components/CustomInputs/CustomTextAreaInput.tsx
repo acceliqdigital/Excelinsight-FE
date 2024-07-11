@@ -4,10 +4,9 @@ export default function CustomTextAreaInput({
 	inputBoxStyles,
 	leftIcon,
 	rightIcon,
-  defaultValue='',
   name,
   value,
-  placeholder='',
+  placeholder='Type here...',
   handleChange,
   disabled = false,
   inputStyles,
@@ -28,7 +27,6 @@ export default function CustomTextAreaInput({
             name={name}
             id={name}
             rows={4}
-            defaultValue={defaultValue}
             value={value}
             placeholder={placeholder}
             onChange={handleChange}

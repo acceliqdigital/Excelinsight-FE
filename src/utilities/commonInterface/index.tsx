@@ -6,6 +6,11 @@ export type inputChangeEventType = React.ChangeEvent<HTMLInputElement>;
 export type textAreaChangeEventType = React.ChangeEvent<HTMLTextAreaElement>;
 export type KeybordEventType = React.KeyboardEvent<HTMLInputElement>;
 
+
+export interface GenericObjectInterface {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+}
 export interface CustomTextInputProp {
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
@@ -39,6 +44,20 @@ export interface CustomTextAreaProp {
   inputStyles?: CSSProperties;
 }
 
+export interface HeaderProp{
+  headerName: string,
+  selectionIsPrivate: boolean
+}
+
+export interface UploadFormikProps {
+  'dataFiles': (File | null)[]
+  'supplementaryFiles': (File | null)[],
+  businessModelDescription: string,
+  businessInsightsReport: string,
+  outputFormatDescription: string,
+  uploadStage: 'upload' |  'formatSpecification' | 'columnDiscard' | 'discardedColumnView' | 'processing' | 'discrepencyDisplay'
+}
+
 export interface CustomFileUploadProp {
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
@@ -46,11 +65,12 @@ export interface CustomFileUploadProp {
   inputBoxStyles?: CSSProperties;
   inputLabel?: ReactNode
   name?: string
+  selectedFileParent?: File | null
   disabled?: boolean;
   defaultValue?:string
   value?: string;
   placeholder?: string;
-  handleChange?: (files: FileList) => void;
+  handleChange?: (files: FileList) => boolean;
   handleBlur?: (ev: inputChangeEventType) => void;
   inputStyles?: CSSProperties;
   acceptString: string

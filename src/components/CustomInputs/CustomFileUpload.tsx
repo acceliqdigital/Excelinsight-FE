@@ -1,14 +1,16 @@
 import { CustomFileUploadProp } from "@/utilities/commonInterface";
+import { showWarningMessage } from "@/utilities/PopupUserExperience/PopupUserExperience";
 import { Divider } from "@mui/material";
 import { useRef, useState } from "react";
 
 export default function CustomFileUpload({
 	inputLabel,
 	handleChange,
-	acceptString
+	acceptString,
+  selectedFileParent = null
 }: CustomFileUploadProp) {
   const selectedFileInput = useRef<HTMLInputElement>(null);
-	const [selectedFile, setSelectedFile] = useState<File | null>(null)
+	const [selectedFile, setSelectedFile] = useState<File | null>(selectedFileParent)
   return (
     <>
       {inputLabel && (
@@ -18,9 +20,12 @@ export default function CustomFileUpload({
         <label className="w-full h-full cursor-pointer">
           <input
 						onChange={() => {
-							if(selectedFileInput.current?.files && selectedFileInput.current?.files?.length > 0)
-								setSelectedFile(selectedFileInput.current.files[0])
-							selectedFileInput.current?.files && handleChange && handleChange(selectedFileInput.current?.files)
+							if(selectedFileInput.current?.files && selectedFileInput.current?.files?.length > 0){
+                const fileSelectionVerdict = selectedFileInput.current?.files && handleChange && handleChange(selectedFileInput.current?.files)
+                if(fileSelectionVerdict) setSelectedFile(selectedFileInput.current.files[0])
+                else
+                  showWarningMessage('File already selected!')
+              }
 						}}
             multiple={false}
             ref={selectedFileInput}
