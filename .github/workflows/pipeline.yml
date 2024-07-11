@@ -20,9 +20,7 @@ jobs:
 
     steps:
       - name: Clean
-        run: |
-          whoami
-          echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S docker system prune -f --all
+        run: echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S docker system prune -f --all
 
   Deploy:
     name: Build and Deploy
@@ -30,4 +28,4 @@ jobs:
     needs: CleanUp
 
     steps: 
-      - run: sudo docker compose -f docker-compose.dev.yml up -d --build
+      - run: echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S docker compose -f docker-compose.dev.yml up -d --build
