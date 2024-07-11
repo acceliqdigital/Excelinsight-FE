@@ -1,4 +1,5 @@
 import { CustomButtonProp } from "@/utilities/commonInterface";
+import { colors } from "@/utilities/themes/colors";
 import { Button, CircularProgress } from "@mui/material";
 
 export default function CustomButton({
@@ -12,7 +13,9 @@ export default function CustomButton({
 }: CustomButtonProp){
   return (
 		<Button sx={
-			{...buttonStyles}
+			{":hover": {
+				bgcolor: colors.BLACK
+			}, ...buttonStyles}
 		} disabled={disabled} onClick={handleClick} variant={variant} type={type}>
 			<div className="flex items-center gap-2">
         {showLoader && <CircularProgress size={20} />}

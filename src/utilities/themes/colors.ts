@@ -5,4 +5,5 @@ export const colors = {
   BLACK: '#000000',
   LINK: "#006FE0",
   GREY: '#999999',
+  YELLOW: '#E09E00'
 }
