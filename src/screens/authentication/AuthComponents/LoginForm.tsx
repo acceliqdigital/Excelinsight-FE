@@ -7,6 +7,12 @@ import CustomButton from "@/components/CustomButton"
 import { colors } from "@/utilities/themes/colors"
 import { useNavigate } from "react-router-dom"
 import { routes } from "@/utilities/routes"
+import { API_END_POINTS, CONTENT_TYPES, headersList, postData } from "@/utilities/api/apiConfig"
+import { GenericObjectInterface } from "@/utilities/commonInterface"
+import { AxiosError } from "axios"
+import { ApiStatusCodes } from "@/utilities/api/apiStatusCodes"
+import { useDispatch } from "react-redux"
+import { updateUserCredentials } from "@/redux/reducers/userReducer"
 
 interface FormikLoginProps {
 	email: string,
@@ -15,10 +21,24 @@ interface FormikLoginProps {
 }
 
 export default function LoginForm(){
-
+	const dispatch = useDispatch()
+	const navigator = useNavigate()
 	const handleLoginRequest = async (value: FormikLoginProps) => {
 		try {
-			value
+			CONTENT_TYPES.APPLICATION_JSON
+			const headers = {
+				...headersList,
+				'Content-Type': CONTENT_TYPES.APPLICATION_JSON
+			}
+			const response = await postData<GenericObjectInterface>(
+				headers,
+				JSON.stringify({
+					'username_or_email': value.email,
+					'password': value.password
+				}),
+				API_END_POINTS.LOGIN
+			)
+			return response
 		} catch (error) {
 			console.log(error)
 			throw error
@@ -34,8 +54,19 @@ export default function LoginForm(){
 			console.log(values)
 			handleLoginRequest(values).then((response) => {
 				console.log(response)
-			}).catch(err => {
-				console.log(err)
+				dispatch(updateUserCredentials({
+					userEmail: values.email,
+					userToken: response.data.token
+				}))
+				navigator(routes.HOME)
+			}).catch(error => {
+				if((error as AxiosError).response?.status == ApiStatusCodes.FORBIDDEN){
+					dispatch(updateUserCredentials({
+						userEmail: values.email,
+						userToken: (error as AxiosError<GenericObjectInterface>).response?.data['token']
+					}))
+					navigator(routes.HOME)
+				}
 			})
 		}
 	})
@@ -74,7 +105,7 @@ export default function LoginForm(){
 					children
 					type={formik.values.showPassword ? 'text' : 'password'}
 				/>
-				<div onClick={() => navigate(`${routes.HOME}${routes.AUTH}${routes.FORGOT_PASSWORD}`)} className='text-md-1 my-basic text-right underline cursor-pointer'>{constants.FORGOT_PASSWORD_PROMPT}</div>
+				<div onClick={() => navigate(`${routes.HOME}${routes.FORGOT_PASSWORD}`)} className='text-md-1 my-basic text-right underline cursor-pointer'>{constants.FORGOT_PASSWORD_PROMPT}</div>
 				<CustomButton
 					buttonStyles={{ 
 						width: '100%',

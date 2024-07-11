@@ -5,7 +5,6 @@ export default function CustomTextInput({
 	leftIcon,
 	rightIcon,
   type,
-  defaultValue='',
   name,
   value,
   placeholder='',
@@ -30,7 +29,6 @@ export default function CustomTextInput({
             type={type}
             name={name}
             id={name}
-            defaultValue={defaultValue}
             value={value}
             placeholder={placeholder}
             onChange={handleChange}

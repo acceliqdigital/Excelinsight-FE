@@ -25,7 +25,7 @@ export default function ForgotPassword(){
 			{
 				showVerifyOTP ? 
 				<OTP
-					handleSubmit={() => navigator(`${routes.HOME}${routes.AUTH}${routes.RESET_PASSWORD}`)}
+					handleSubmit={() => navigator(`${routes.HOME}${routes.RESET_PASSWORD}`)}
 					goBackHandler={() => setShowVerifyOTP(false)} 
 					title={<span className='font-semi-bold'>{constants.FORGOT_MY_PASSWORD_TITLE}</span>} 
 					subtitle={<span className='text-md-1'>{constants.SENT_OTP_PROMPT}</span>} /> : 

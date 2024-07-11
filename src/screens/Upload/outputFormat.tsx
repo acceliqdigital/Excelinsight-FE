@@ -31,11 +31,8 @@ export default function OutputFormat({
 						</div>
 						<div className="w-[40%] mx-auto">
 							<CustomButton
-								type="button"
+								type="submit"
 								variant="contained"
-								handleClick={() => {
-									formik.setFieldValue('uploadStage', 'columnDiscard')
-								}}
 								buttonStyles={{
 									py: 1,
 									bgcolor: colors.BLACK,

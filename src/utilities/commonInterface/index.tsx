@@ -49,13 +49,20 @@ export interface HeaderProp{
   selectionIsPrivate: boolean
 }
 
+export type CustomResponse<T> = {
+  data: T;
+  status: number;
+};
+
 export interface UploadFormikProps {
   'dataFiles': (File | null)[]
   'supplementaryFiles': (File | null)[],
+  mergedColummns: HeaderProp[],
+  mergedDF: GenericObjectInterface[][]
   businessModelDescription: string,
   businessInsightsReport: string,
   outputFormatDescription: string,
-  uploadStage: 'upload' |  'formatSpecification' | 'columnDiscard' | 'discardedColumnView' | 'processing' | 'discrepencyDisplay'
+  uploadStage: 'upload' |  'formatSpecification' | 'columnDiscard' | 'discardedColumnView' | 'processing' | 'discrepencyDisplay' | 'loading'
 }
 
 export interface CustomFileUploadProp {

@@ -18,5 +18,7 @@ const userSlice = createSlice({
 		builder
 	},
 })
-
+export const {
+	updateUserCredentials
+} = userSlice.actions
 export default userSlice.reducer

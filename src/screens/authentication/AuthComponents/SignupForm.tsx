@@ -32,7 +32,7 @@ export default function SignupForm(){
 				// <div>OTP</div> :
 				<OTP handleSubmit={() => {
 					console.log('navigate to kyc')
-					navigator(`${routes.HOME}${routes.AUTH}${routes.PROFILE_KYC}`)
+					navigator(`${routes.HOME}${routes.PROFILE_KYC}`)
 				}} goBackHandler={() => setShowVerifyOTP(false)} title={<span className='font-semi-bold'>Enter the OTP sent to <span className='whitespace-nowrap'>+91 9999999999</span></span>} /> :
 				<>
 					<div className='mb-large'>
@@ -65,7 +65,7 @@ export default function SignupForm(){
 							placeholder='Enter password'
 							type={formik.values.showPassword ? 'text' : 'password'}
 						/>
-						<div onClick={() => navigate(`${routes.HOME}${routes.AUTH}${routes.FORGOT_PASSWORD}`)} className='text-md-1 my-basic text-right underline cursor-pointer'>{constants.FORGOT_PASSWORD_PROMPT}</div>
+						<div onClick={() => navigate(`${routes.HOME}${routes.FORGOT_PASSWORD}`)} className='text-md-1 my-basic text-right underline cursor-pointer'>{constants.FORGOT_PASSWORD_PROMPT}</div>
 						<CustomButton
 							buttonStyles={{ 
 								width: '100%',
