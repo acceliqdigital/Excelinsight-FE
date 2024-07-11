@@ -20,8 +20,9 @@ jobs:
 
     steps:
       - name: Clean
-        run: whoami
-        run: sudo docker system prune -f --all
+        run: |
+          whoami
+          sudo docker system prune -f --all
 
   Deploy:
     name: Build and Deploy
