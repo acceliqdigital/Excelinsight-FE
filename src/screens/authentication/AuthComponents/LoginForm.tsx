@@ -8,8 +8,23 @@ import { colors } from "@/utilities/themes/colors"
 import { useNavigate } from "react-router-dom"
 import { routes } from "@/utilities/routes"
 
+interface FormikLoginProps {
+	email: string,
+	password: string,
+	showPassword: boolean
+}
+
 export default function LoginForm(){
-	const formik = useFormik({
+
+	const handleLoginRequest = async (value: FormikLoginProps) => {
+		try {
+			value
+		} catch (error) {
+			console.log(error)
+			throw error
+		}
+	}
+	const formik = useFormik<FormikLoginProps>({
 		initialValues: {
 			email: '',
 			password: '',
@@ -17,10 +32,15 @@ export default function LoginForm(){
 		},
 		onSubmit: (values) => {
 			console.log(values)
+			handleLoginRequest(values).then((response) => {
+				console.log(response)
+			}).catch(err => {
+				console.log(err)
+			})
 		}
 	})
 	const navigate = useNavigate()
-  return (
+	return (
 		<>
 			<div className='mb-large'>
 				<h2 className='text-lg'>{constants.LOG_IN}</h2>
