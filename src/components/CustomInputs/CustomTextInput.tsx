@@ -10,6 +10,7 @@ export default function CustomTextInput({
   placeholder='',
   handleChange,
   handleBlur,
+  handleKeyDown,
   disabled = false,
   inputStyles,
   inputLabel
@@ -26,6 +27,7 @@ export default function CustomTextInput({
         {leftIcon && <div className="flex items-center">{leftIcon}</div>}
         <div className="flex-grow h-full flex items-center">
           <input
+            onKeyDown={handleKeyDown}
             type={type}
             name={name}
             id={name}

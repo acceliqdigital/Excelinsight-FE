@@ -1,4 +1,4 @@
-import { DummyProfilePic, ExcelInsightLogo } from "@/assets";
+import { DummyImage, ExcelInsightLogo } from "@/assets";
 import { resetState } from "@/redux/combineStore";
 import { routes } from "@/utilities/routes";
 import { Menu, MenuItem } from "@mui/material";
@@ -23,7 +23,7 @@ export default function Dashboard(){
 						<h6 className="text-md-1">johnshell55@email.com</h6>
 					</div>
 					<div className="flex flex-col justify-center p-basic cursor-pointer" ref={ancor} onClick={() => setMenuVisible(true)}>
-						<img width={40} src={DummyProfilePic} />
+						<img width={40} src={DummyImage} />
 					</div>
 				</div>
 			</div>

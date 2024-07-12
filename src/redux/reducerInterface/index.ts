@@ -8,12 +8,19 @@ export interface UserCredentialsProps {
 	userToken: string
 }
 
-interface Chat {
+export interface ChatAppendPayloadProps {
 	message: string
 	owner: 'user' | 'bot'
 }
 
+export interface Chat {
+	message: string
+	owner: 'user' | 'bot'
+	messageId: string
+}
+
 export interface ChatReducerProps {
-	chatId: string | null
-	chatHistory: Chat[]
+	chatSessionId: string | null
+	chatHistory: Chat[],
+	mediaRoot: string
 }

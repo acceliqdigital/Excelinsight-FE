@@ -13,6 +13,7 @@ import { AxiosError } from "axios"
 import { ApiStatusCodes } from "@/utilities/api/apiStatusCodes"
 import { useDispatch } from "react-redux"
 import { updateUserCredentials } from "@/redux/reducers/userReducer"
+import { showErrorMessage } from "@/utilities/PopupUserExperience/PopupUserExperience"
 
 interface FormikLoginProps {
 	email: string,
@@ -66,6 +67,8 @@ export default function LoginForm(){
 						userToken: (error as AxiosError<GenericObjectInterface>).response?.data['token']
 					}))
 					navigator(routes.HOME)
+				} else if((error as AxiosError).response?.status == ApiStatusCodes.UNAUTHORIZED){
+					showErrorMessage('Login credentials were invalid')
 				}
 			})
 		}

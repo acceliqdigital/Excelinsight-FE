@@ -3,6 +3,7 @@ import { CSSProperties } from "@mui/material/styles/createMixins";
 import { ReactNode } from 'react'
 
 export type inputChangeEventType = React.ChangeEvent<HTMLInputElement>;
+export type inputKeyDownEventType = React.KeyboardEvent<HTMLInputElement>;
 export type textAreaChangeEventType = React.ChangeEvent<HTMLTextAreaElement>;
 export type KeybordEventType = React.KeyboardEvent<HTMLInputElement>;
 
@@ -24,6 +25,7 @@ export interface CustomTextInputProp {
   value?: string;
   placeholder?: string;
   handleChange?: (ev: inputChangeEventType) => void;
+  handleKeyDown?: (ev: inputKeyDownEventType) => void
   handleBlur?: (ev: inputChangeEventType) => void;
   inputStyles?: CSSProperties;
 }

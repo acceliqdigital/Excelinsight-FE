@@ -13,9 +13,16 @@ import { API_END_POINTS, CONTENT_TYPES, headersList, postData } from "@/utilitie
 import Descrepencies from "./Descrepencies";
 import { useState } from "react";
 import ClarificationChat from "./ClarificationChat";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/combineStore";
+import { setChatSessionId, setMediaDirectory } from "@/redux/reducers/chatReducer";
 
 export default function Upload() {
+  const dispatch = useDispatch()
   const [discrepencyPayload, setDiscrepencyPayload] = useState<GenericObjectInterface | null>(null)
+  const {
+    userToken
+  } = useSelector((state: RootState) => state.userStateReducer)
   const formik = useFormik<UploadFormikProps>({
     initialValues: {
       dataFiles: [null],
@@ -33,13 +40,13 @@ export default function Upload() {
       console.log(values);
       setSubmitting(false)
       console.log('semnding data to backend')
-      formik.setFieldValue('uploadStage', 'loading')
       // resetForm()
       if(formik.values.uploadStage == 'formatSpecification'){
         try {
           const headers = {
             ...headersList,
-            'Content-Type': CONTENT_TYPES.FORM_DATA
+            'Content-Type': CONTENT_TYPES.FORM_DATA,
+            'Authorization' : `Token ${userToken}`
           }
           const formData = new FormData()
           formData.append('file_1', values.dataFiles[0] ? values.dataFiles[0] : 'null')
@@ -62,10 +69,12 @@ export default function Upload() {
           formik.setFieldValue('uploadStage', 'columnDiscard')
         }
       } else if(formik.values.uploadStage == 'columnDiscard') {
+        formik.setFieldValue('uploadStage', 'loading')
         try {
           const headers = {
             ...headersList,
-            'Content-Type': CONTENT_TYPES.APPLICATION_JSON
+            'Content-Type': CONTENT_TYPES.APPLICATION_JSON,
+            'Authorization' : `Token ${userToken}`
           }
           const response = await postData<GenericObjectInterface>(
             headers,
@@ -81,6 +90,8 @@ export default function Upload() {
           console.log(response)
           console.log(JSON.parse(response.data['discrepancies']))
           setDiscrepencyPayload(JSON.parse(response.data['discrepancies']))
+          dispatch(setChatSessionId(response.data['chatsessionid']))
+          dispatch(setMediaDirectory(response.data['MEDIA_ROOT']))
           formik.setFieldValue('uploadStage', 'discrepencyDisplay')
         } catch (error) {
           console.log(error)
