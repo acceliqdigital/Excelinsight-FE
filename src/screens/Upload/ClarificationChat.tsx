@@ -28,7 +28,7 @@ export default function ClarificationChat({
 	const [isBotMessageLoading, setIsBotMessageLoading] = useState<boolean>(false)
   const socket = useRef<WebSocket | null>(null);
   useEffect(() => {
-    const socketPath = `ws://10.44.17.18:8001/ws/chat/${sessionId}/`;
+    const socketPath = `ws://localhost:8008/ws/chat/${sessionId}/`;
     socket.current = new WebSocket(socketPath);
     socket.current.addEventListener("open", () => {
       console.log("socket has been connected");
