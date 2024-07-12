@@ -68,7 +68,7 @@ export default function DiscardColumns({
 	}, [formik.values.dataFiles])
 	return (
 		<>
-      <div className="flex flex-row">
+      <div className="flex flex-row py-large px-xLarge">
 				<span
 					className="text-black cursor-pointer mr-1 leading-lg-1"
 					onClick={() => formik.setFieldValue("uploadStage", "formatSpecification")}

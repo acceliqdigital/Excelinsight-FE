@@ -3,12 +3,12 @@ import { CustomResponse, GenericObjectInterface } from "@/utilities/commonInterf
 
 /* eslint-disable no-useless-catch */
 let BASE_URL = ''
-BASE_URL = 'http://localhost:8008/'
+BASE_URL = 'http://10.44.17.18:8001/'
 if(import.meta.env.DEV) {
-  BASE_URL = 'http://localhost:8008/'
+  BASE_URL = 'http://10.44.17.18:8001/'
 } else {
-//   BASE_URL = 'http://10.44.22.83:8008/'
-  BASE_URL = 'http://localhost:8008/'
+  BASE_URL = 'http://10.44.17.18:8001/'
+//   BASE_URL = 'http://localhost:8008/'
 }
 
 const headersList = {

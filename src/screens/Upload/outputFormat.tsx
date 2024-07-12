@@ -12,7 +12,7 @@ export default function OutputFormat({
 }) {
   return (
     <>
-      <div className="flex flex-row">
+      <div className="flex flex-row px-xLarge py-large">
         <span
           className="text-black cursor-pointer mr-1 leading-lg-1"
           onClick={() => formik.setFieldValue("uploadStage", "upload")}
@@ -24,10 +24,24 @@ export default function OutputFormat({
           <h3 className="text-md-1 text-grey ">Select the desired output format for your data.</h3>
 					<div className="flex flex-col gap-4 mt-moderate">
 						<div>
-							<CustomTextAreaInput handleChange={formik.handleChange} name="businessInsightsReport" value={formik.values.businessInsightsReport} inputLabel={<span className="font-semi-bold text-md-1 tracking-wide">Business Insights Report</span>} />
+							<CustomTextAreaInput
+              inputBoxStyles={{
+                backgroundColor: colors.SECONDARY_THEME
+              }}
+              inputStyles={{
+                backgroundColor: colors.SECONDARY_THEME
+              }}
+              handleChange={formik.handleChange} name="businessInsightsReport" value={formik.values.businessInsightsReport} inputLabel={<span className="font-semi-bold text-md-1 tracking-wide">Business Insights Report</span>} />
 						</div>
 						<div>
-							<CustomTextAreaInput value={formik.values.outputFormatDescription} name="outputFormatDescription" handleChange={formik.handleChange} inputLabel={<span className="font-semi-bold text-md-1 tracking-wide">Describe Output Format</span>} />
+							<CustomTextAreaInput
+              inputBoxStyles={{
+                backgroundColor: colors.SECONDARY_THEME
+              }}
+              inputStyles={{
+                backgroundColor: colors.SECONDARY_THEME
+              }}
+              value={formik.values.outputFormatDescription} name="outputFormatDescription" handleChange={formik.handleChange} inputLabel={<span className="font-semi-bold text-md-1 tracking-wide">Describe Output Format</span>} />
 						</div>
 						<div className="w-[40%] mx-auto">
 							<CustomButton

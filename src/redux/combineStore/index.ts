@@ -10,7 +10,7 @@ import {
 	REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { userReducer } from "../reducers/index";
+import { chatReducer, userReducer } from "../reducers/index";
 import { Action, AnyAction } from "@reduxjs/toolkit";
 
 
@@ -24,6 +24,7 @@ const rootReducer = (state: any, action: AnyAction) => {
 	}
 	return combineReducers({
 		userStateReducer: userReducer,
+		chatStateReducer: chatReducer
 	})(state, action);
 };
 

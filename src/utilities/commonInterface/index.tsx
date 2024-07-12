@@ -62,7 +62,7 @@ export interface UploadFormikProps {
   businessModelDescription: string,
   businessInsightsReport: string,
   outputFormatDescription: string,
-  uploadStage: 'upload' |  'formatSpecification' | 'columnDiscard' | 'discardedColumnView' | 'processing' | 'discrepencyDisplay' | 'loading'
+  uploadStage: 'upload' |  'formatSpecification' | 'columnDiscard' | 'discardedColumnView' | 'processing' | 'discrepencyDisplay' | 'loading' | 'chat'
 }
 
 export interface CustomFileUploadProp {

@@ -12,6 +12,7 @@ import { CircularProgress } from "@mui/material";
 import { API_END_POINTS, CONTENT_TYPES, headersList, postData } from "@/utilities/api/apiConfig";
 import Descrepencies from "./Descrepencies";
 import { useState } from "react";
+import ClarificationChat from "./ClarificationChat";
 
 export default function Upload() {
   const [discrepencyPayload, setDiscrepencyPayload] = useState<GenericObjectInterface | null>(null)
@@ -41,19 +42,10 @@ export default function Upload() {
             'Content-Type': CONTENT_TYPES.FORM_DATA
           }
           const formData = new FormData()
-          formData.append('name_1', values.dataFiles[0] ? values.dataFiles[0].name : 'null')
           formData.append('file_1', values.dataFiles[0] ? values.dataFiles[0] : 'null')
-  
-          formData.append('name_2', values.dataFiles[1] ? values.dataFiles[1].name : 'null')
           formData.append('file_2', values.dataFiles[1] ? values.dataFiles[1] : 'null')
-  
-          formData.append('name_3', values.dataFiles[2] ? values.dataFiles[2].name : 'null')
           formData.append('file_3', values.dataFiles[2] ? values.dataFiles[2] : 'null')
-  
-          formData.append('name_4', values.supplementaryFiles[0] ? values.supplementaryFiles[0].name : 'null')
-          formData.append('file_4', values.supplementaryFiles[0] ? values.supplementaryFiles[0] : 'null')
-  
-          formData.append('name_5', values.supplementaryFiles[1] ? values.supplementaryFiles[1].name : 'null')
+          formData.append('file_4', values.supplementaryFiles[0] ? values.supplementaryFiles[0] : 'null')  
           formData.append('file_5', values.supplementaryFiles[1] ? values.supplementaryFiles[1] : 'null')
   
           const response = await postData<GenericObjectInterface>(headers, formData, API_END_POINTS.INSIGHT_EXCEL_UPLOAD)
@@ -99,11 +91,10 @@ export default function Upload() {
   });
   return (
     <div className="flex flex-row grow self-stretch">
-      <div className="w-1/4"></div>
-      <div className="bg-white w-3/4 p-moderate grow rounded-md m-basic mr-0">
+      <div className="bg-secondary-theme w-full grow rounded-md m-basic mr-0">
         <form onSubmit={formik.handleSubmit} className="h-full">
           {formik.values.uploadStage == "upload" && (
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-2 gap-y-5 gap-x-14 px-xLarge">
               <div className="flex flex-col gap-2">
                 <h2 className="text-lg-1 font-semi-bold">Data File Upload</h2>
                 {formik.values.dataFiles.map((_, index) => {
@@ -181,10 +172,16 @@ export default function Upload() {
                 <h2 className="text-lg-1 font-semi-bold">
                   Business Model Description
                 </h2>
-                <div>
+                <div className="w-3/4">
                   <CustomTextAreaInput
                     value={formik.values.businessModelDescription}
                     name="businessModelDescription"
+                    inputBoxStyles={{
+                      backgroundColor: colors.SECONDARY_THEME
+                    }}
+                    inputStyles={{
+                      backgroundColor: colors.SECONDARY_THEME
+                    }}
                     placeholder="Type here ..."
                     handleChange={formik.handleChange}
                     inputLabel={
@@ -205,6 +202,14 @@ export default function Upload() {
                       py: 1,
                     }}
                     handleClick={() => {
+                      if(formik.values.dataFiles.length < 3){
+                        showWarningMessage('Please upload atleast 3 data files to proceed')
+                        return
+                      }
+                      if(formik.values.supplementaryFiles.length < 2){
+                        showWarningMessage('Please upload atleast 2 supplementary files to proceed')
+                        return
+                      }
                       formik.setFieldValue("uploadStage", "formatSpecification");
                     }}
                     btnChild={
@@ -233,6 +238,11 @@ export default function Upload() {
           {
             formik.values.uploadStage == 'discrepencyDisplay' && (
               <Descrepencies discrepencyPayload={discrepencyPayload} formik={formik} />
+            )
+          }
+          {
+            formik.values.uploadStage == 'chat' && (
+              <ClarificationChat formik={formik} />
             )
           }
         </form>

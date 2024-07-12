@@ -13,7 +13,7 @@ interface Chat {
 	owner: 'user' | 'bot'
 }
 
-export interface ChatReducer {
+export interface ChatReducerProps {
 	chatId: string | null
 	chatHistory: Chat[]
 }

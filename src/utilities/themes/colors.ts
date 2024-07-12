@@ -1,5 +1,7 @@
 export const colors = {
   PRIMARY_THEME: '#e7e9f1',
+  SECONDARY_THEME: '#F6F6F6',
+  SECONDARY_THEME_2: '#F1F1F1',
   BACKGROUND_COLOR: '#FFFFFF',
 	WHITE: '#FFFFFF',
   BLACK: '#000000',

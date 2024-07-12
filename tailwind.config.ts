@@ -10,6 +10,8 @@ export default {
     colors: {
       "primary-background": colors.BACKGROUND_COLOR,
       "primary-theme": colors.PRIMARY_THEME,
+      "secondary-theme": colors.SECONDARY_THEME,
+      "secondary-theme-2": colors.SECONDARY_THEME_2,
       white: colors.WHITE,
       black: colors.BLACK,
       "link-blue": colors.LINK,

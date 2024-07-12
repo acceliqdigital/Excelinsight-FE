@@ -1,3 +1,3 @@
 import userReducer from "./userReducer";
-
-export {userReducer}
+import chatReducer from './chatReducer'
+export {userReducer, chatReducer}

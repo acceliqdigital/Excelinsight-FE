@@ -31,6 +31,14 @@ function App() {
               <Route path={routes.PROFILE_KYC} element={<ProfileDetails />} />
             </Route>
           </Route>
+          <Route
+            path="*"
+            element={
+              <Navigate
+                to={routes.HOME}
+              />
+            }
+          />
         </Routes>
       </>
     )
@@ -46,6 +54,14 @@ function App() {
               <Route path={routes.UPLOAD} element={<Upload />} />
             </Route>
           </Route>
+          <Route
+            path="*"
+            element={
+              <Navigate
+                to={routes.HOME}
+              />
+            }
+          />
         </Routes>
       </>
     )

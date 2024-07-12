@@ -31,7 +31,7 @@ export default function Descrepencies({
 				<div className="w-[40%] mx-auto">
 					<CustomButton
 						type="button"
-						handleClick={() => formik.setFieldValue('uploadStage', 'upload')}
+						handleClick={() => formik.setFieldValue('uploadStage', 'chat')}
 						variant="contained"
 						buttonStyles={{
 							py: 1,
