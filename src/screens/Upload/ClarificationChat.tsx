@@ -97,7 +97,7 @@ export default function ClarificationChat({
         <div className="bg-secondary-theme-2 w-[20%]">
           {/* Chat references */}
           <div className="flex flex-row justify-end my-moderate mx-basic bg-primary-background p-basic rounded-md">
-            <a download={true} href={mediaRoot}>
+            <a download={'merge.xlsx'} href={`data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,${mediaRoot}`}>
 							<span>Download<DownloadRoundedIcon /></span>
 						</a>
           </div>
