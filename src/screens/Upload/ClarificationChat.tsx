@@ -28,12 +28,17 @@ export default function ClarificationChat({
 	const [isBotMessageLoading, setIsBotMessageLoading] = useState<boolean>(false)
   const socket = useRef<WebSocket | null>(null);
   useEffect(() => {
+    if(socket.current?.OPEN)
+      return
     const socketPath = `ws://localhost:8008/ws/chat/${sessionId}/`;
     socket.current = new WebSocket(socketPath);
     socket.current.addEventListener("open", () => {
-      console.log("socket has been connected");
+      console.log("socket has been connected syaty again");
       setChatLoading(false);
     });
+    socket.current.addEventListener('close', (ev) => {
+      console.log('socket close with', ev)
+    })
     socket.current.addEventListener("message", (ev) => {
       console.log(JSON.parse(ev.data));
 			const payload: GenericObjectInterface = JSON.parse(ev.data)
@@ -43,11 +48,13 @@ export default function ClarificationChat({
 			}))
 			setIsBotMessageLoading(false)
     });
-		return () => {
+  }, [dispatch, sessionId]);
+  useEffect(() => {
+    return () => {
 			socket.current?.close()
 			dispatch(clearChat())
 		}
-  }, [dispatch, sessionId]);
+  }, [])
   const handleSubmit = async (userPrompt: string) => {
     if (userPrompt.length <= 0) return;
     if (socket.current == null) return;
@@ -105,7 +112,7 @@ export default function ClarificationChat({
 						<CustomButton
 							type="button"
 							handleClick={() => {
-								formik.resetForm()
+								// formik.resetForm()
 								formik.setFieldValue("uploadStage", "upload")
 							}}
 							variant="contained"
