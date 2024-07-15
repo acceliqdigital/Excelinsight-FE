@@ -7,7 +7,7 @@ export type inputKeyDownEventType = React.KeyboardEvent<HTMLInputElement>;
 export type textAreaChangeEventType = React.ChangeEvent<HTMLTextAreaElement>;
 export type KeybordEventType = React.KeyboardEvent<HTMLInputElement>;
 
-
+export type ArrayOfStringType = string[];
 export interface GenericObjectInterface {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
@@ -93,4 +93,36 @@ export interface CustomButtonProp {
 	type?: "submit" | "button";
 	disabled?: boolean;
 	showLoader?: boolean;
+}
+
+export interface LottieFileType {
+  v: string;
+  fr: number;
+  ip: number;
+  op: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  layers: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  assets: any[];
+}
+export interface lottieAnimProviderProptypes {
+  animationFile: LottieFileType;
+  height?: number | string;
+  width?: number | string;
+  autoplay?: boolean;
+  loop?: boolean;
+  lottieStyle?: React.CSSProperties;
+  handleAnimationEnd?: () => void;
+  classNameLottie?: string;
+}
+
+/**
+ * Interface of Typewriter UI component
+ */
+export interface TypeWriterUIPropTypes {
+  botResponse: string;
+  delay: number;
+  useTypeWriter?: boolean;
+  handleAnimationFinished?: () => void;
+  textClass?: string;
 }

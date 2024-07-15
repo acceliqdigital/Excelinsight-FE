@@ -1,0 +1,62 @@
+.reportSelectedBg {
+    background: linear-gradient(to bottom, #1b121200, #1b121292 30%, #1b1212);
+    /* background: linear-gradient(to bottom, rgba(255, 0, 0, 0), rgba(255, 0, 0, 0.508) 30%, red); */
+  }
+  
+  .messageAnimation {
+    animation-name: showMessage;
+    animation-duration: 0.5s;
+    animation-iteration-count: 1;
+  }
+
+  
+  @keyframes showMessage {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+  }
+  
+  @keyframes showSubmitButton {
+    from {
+      opacity: 0;
+    }
+  
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /** 
+  * Custom Scroll Bar
+  */
+  /* width */
+  .scrollingContainer::-webkit-scrollbar {
+    width: 6px;
+    height: 8px;
+    border-radius: 10px;
+  }
+  
+  /* Track */
+  .scrollingContainer::-webkit-scrollbar-track {
+    background: #d9e5ff;
+    border-radius: 10px;
+
+    // display: none;
+  }
+  
+  /* Handle */
+  .scrollingContainer::-webkit-scrollbar-thumb {
+    background: #573be29d;
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  .scrollingContainer::-webkit-scrollbar-thumb:hover {
+    background: #573be2b4;
+  }

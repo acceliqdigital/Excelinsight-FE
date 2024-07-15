@@ -6,16 +6,17 @@ import path from 'path'
 export default defineConfig({
   plugins: [react()],
   base: './',
-  server: {
-    port: 8060
-  },
+  // server: {
+  //   port: 8060
+  // },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@components': path.resolve(__dirname, './src/components'),
       '@utilities': path.resolve(__dirname, './src/utilities'),
       '@screens': path.resolve(__dirname, './src/screens'),
-      "@redux": path.resolve(__dirname, "./src/redux"),
+      "@assets": path.resolve(__dirname, "./src/assets"),
+      "@store": path.resolve(__dirname, "./src/redux"),
     }
   }
 })

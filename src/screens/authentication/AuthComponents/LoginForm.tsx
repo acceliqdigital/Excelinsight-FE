@@ -59,7 +59,7 @@ export default function LoginForm(){
 					userEmail: values.email,
 					userToken: response.data.token
 				}))
-				navigator(routes.HOME)
+				// navigator(routes.HOME)
 			}).catch(error => {
 				if((error as AxiosError).response?.status == ApiStatusCodes.FORBIDDEN){
 					dispatch(updateUserCredentials({
