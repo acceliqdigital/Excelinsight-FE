@@ -1,5 +1,11 @@
 import CustomTextInput from "@/components/CustomInputs/CustomTextInput";
-import { colors, GenericObjectInterface } from "@/utilities";
+import {
+  API_END_POINTS,
+  BASE_URL,
+  colors,
+  GenericObjectInterface,
+  headersList,
+} from "@/utilities";
 import { useFormik } from "formik";
 import CustomButton from "@/components/CustomButton";
 import { AnimatedLoader, DummyImage, ExcelInsightLogo } from "@/assets";
@@ -13,6 +19,11 @@ import style from "./dashboardChatsStyles.module.scss";
 import ExcelIcon from "@/components/ExcelIcon/ExcelIcon";
 import LottieAnimationProvider from "@/components/LottieProvider/LottieAnimationProvider";
 import TypeWriterUI from "@/components/TypeWriterUI/TypeWriterUI";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/combineStore";
+import { useNavigate } from "react-router-dom";
+import { routes } from "@/utilities/routes";
 export interface ChatSpaceInput {
   query: string;
 }
@@ -25,12 +36,14 @@ const mapSender = {
 const BotMessageComponent = ({
   index,
   msg,
+  isImage,
   userMessageRef,
   isBotMessageLoading,
   handleAnimFinished,
   showTypeWriterAnimation,
 }: {
   msg: string;
+  isImage: boolean;
   index: number;
   size?: "small" | "medium";
   userMessageRef: LegacyRef<HTMLDivElement>;
@@ -58,6 +71,12 @@ const BotMessageComponent = ({
             height={55}
             width={55}
             lottieStyle={{ paddingLeft: 8, marginTop: -12 }}
+          />
+        ) : isImage ? (
+          <img
+            src={`data:image/png;base64, ${msg}`}
+            alt=""
+            className="h-[450px] rounded-md overflow-hidden"
           />
         ) : showTypeWriterAnimation ? (
           <div
@@ -138,7 +157,37 @@ const UserMessageComponent = ({
   );
 };
 
+const SampleQuestionsCards = ({question, hanleSubmitSampleQuestion}:{question:string; hanleSubmitSampleQuestion:(question:string)=>void}) => {
+  return (
+    <button onClick={()=>hanleSubmitSampleQuestion(question)} className="bg-white shadow-shadow-md flex flex-col justify-center p-moderate rounded-lg w-[250px] h-[100px]">
+      <span  className="font-medium text-md-1">{question}</span>
+    </button>
+  )
+}
+
+const sampleQuestions = [
+  {
+    id: 0,
+    question :"Tell me something about the file uploaded.",
+  },
+  {
+    id: 1,
+    question :"Are there any columns with missing values ?",
+  },
+  {
+    id: 2,
+    question :"Can you plot the charts based on the provided files ?",
+  }
+]
+
 export default function ChatSpace() {
+  const navigate = useNavigate();
+  const { chatSessionId } = useSelector(
+    (state: RootState) => state.chatStateReducer
+  );
+  const { userToken } = useSelector(
+    (state: RootState) => state.userStateReducer
+  );
   const [botMessageLoading, setBotMessageLoading] = useState(false);
   const [chatData, setChatData] = useState<GenericObjectInterface[]>([]);
   const [showScrollToBottomButton, setShowScrollToBottomButton] =
@@ -157,8 +206,6 @@ export default function ChatSpace() {
   });
 
   useEffect(() => {
-    console.log(userMessageRef.current, "userMessageRef.current");
-
     if (
       chatData[chatData?.length - 1]?.sender === mapSender.USER &&
       userMessageRef.current
@@ -169,12 +216,12 @@ export default function ChatSpace() {
     }
   }, [chatData, showScrollToBottomButton]);
 
-  const handleSubmitMessage = (query: string) => {
+  const handleSubmitMessage = useCallback((query: string) => {
     if (query?.length > 0) {
       formik.setFieldValue("query", "");
       initializeMessage(query);
     }
-  };
+  }, [chatData]);
 
   const initializeMessage = (message: string) => {
     setChatData((prevData) => [
@@ -200,69 +247,52 @@ export default function ChatSpace() {
 
   const sendMessageAPI = async (message: string) => {
     setBotMessageLoading(true);
-    setTimeout(() => {
+
+    try {
+      const data = {
+        message: message,
+        sessionid: chatSessionId,
+      };
+      const headerList = {
+        ...headersList,
+        Authorization: `Token ${userToken}`,
+      };
+      const response = await axios.post(
+        `${BASE_URL}${API_END_POINTS.EXCEL_CHATS}`,
+        data,
+        {
+          headers: headerList,
+        }
+      );
+      console.log(
+        response?.data,
+        response?.data?.llmresponse,
+        "response?.data?.llmresponse"
+      );
+
       setShowTypewriterAnimation(true);
       setChatData((prevData) => [
         ...prevData.slice(0, prevData.length - 1),
         {
           ...prevData[prevData.length - 1],
-          message: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.`,
+          message: response?.data?.llmresponse?.response,
+          isImage: response?.data?.llmresponse?.is_plot,
         },
       ]);
+    } catch (error: any) {
+      console.log(error, "error");
+
+      setChatData((prevData) => [
+        ...prevData.slice(0, prevData.length - 1),
+        {
+          ...prevData[prevData.length - 1],
+          message:
+            "Something went wrong while fetching your data. Please try again later!",
+        },
+      ]);
+    } finally {
       setBotMessageLoading(false);
-    }, 2000);
-    // try {
-    //   const data = {
-    //     query: message,
-    //     allow_follow_ups: false,
-    //   };
-    //   const headerList = {
-    //     ...headersList,
-    //     Authorization: `Token ${userToken}`,
-    //   };
-    //   await axios.post(`${BASE_URL_CHAT}${endPoints.CHAT_API}`, data, {
-    //     headers: headerList,
-    //     responseType: "stream",
-    //     onDownloadProgress: (progressEvent: AxiosProgressEvent) => {
-    //       const chunk = progressEvent?.event?.currentTarget?.response;
-    //       setChatData((prevData) => [
-    //         ...prevData.slice(0, prevData.length - 1),
-    //         {
-    //           ...prevData[prevData.length - 1],
-    //           message: chunk,
-    //         },
-    //       ]);
-    //     },
-    //   });
-    //   if (promptHistory !== null) {
-    //     dispatch(
-    //       updatePromptHistory([
-    //         ...promptHistory,
-    //         { id: promptHistory?.length, query: message },
-    //       ])
-    //     );
-    //   } else {
-    //     dispatch(
-    //       updatePromptHistory([{ id: 0, query: message }])
-    //     );
-    //   }
-    //   setTimeout(() => {
-    //     getChatReferenceQuestions();
-    //     getSuggestiveQuestions();
-    //   }, 1000);
-    // } catch (error: any) {
-    //   setChatData((prevData) => [
-    //     ...prevData.slice(0, prevData.length - 1),
-    //     {
-    //       ...prevData[prevData.length - 1],
-    //       message:
-    //         "Something went wrong while fetching your data. Please try again later!",
-    //     },
-    //   ]);
-    // } finally {
-    //   setBotMessageLoading(false);
-    // }
+    }
   };
 
   const handleAnimFinished = useCallback(() => {
@@ -270,14 +300,25 @@ The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for t
   }, []);
 
   return (
-    <div className="flex flex-col grow bg-secondary-theme overflow-hidden">
-      {/* <div className="w-full-0.9 self-center flex flex-col items-end mt-moderate pb-basic" style={{backgroundColor:"transparent"}}>
-        <CustomButton
-          variant="contained"
-          buttonStyles={{ backgroundColor: colors.BLACK, opacity: 0.8 }}
-          btnChild="Next >"
-        />
-      </div> */}
+    <div className="flex flex-col grow bg-secondary-theme overflow-hidden relative">
+      <CustomButton
+        variant="contained"
+        buttonStyles={{
+          width: 100,
+          backgroundColor: colors.BLACK,
+          opacity: 0.8,
+          textTransform: "capitalize",
+          fontWeight: "500",
+          position: "absolute",
+          right: 20,
+          top: 15,
+          zIndex: 10
+        }}
+        handleClick={useCallback(() => {
+          navigate(routes.BUSINESS_INSIGHTS);
+        }, [])}
+        btnChild="Next >"
+      />
       {chatData?.length > 0 ? (
         <>
           <div
@@ -288,12 +329,10 @@ The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for t
                 const isScrolledToBottom =
                   container.scrollHeight - container.scrollTop - 50 <=
                   container.clientHeight;
-                console.log(isScrolledToBottom, "isScrolledToBottom");
-
                 setShowScrollToBottomButton(!isScrolledToBottom);
               }
             }}
-            className={`${style.scrollingContainer} grow rounded-2xl bg-secondary-theme flex flex-col pb-moderate overflow-y-scroll p-moderate gap-5`}
+            className={`${style.scrollingContainer} pr-[100px] grow rounded-2xl bg-secondary-theme flex flex-col overflow-y-scroll p-moderate gap-5`}
           >
             {chatData?.length > 0 &&
               chatData?.map((item, index) => {
@@ -302,6 +341,7 @@ The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for t
                     <BotMessageComponent
                       index={index}
                       msg={item.message}
+                      isImage={item?.isImage}
                       isBotMessageLoading={
                         botMessageLoading &&
                         index === chatData?.length - 1 &&
@@ -334,19 +374,25 @@ The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for t
           </div>
         </>
       ) : (
-        <div className="grow flex flex-col items-center justify-center gap-2 opacity-50">
+        <div className="grow flex flex-col items-center justify-center gap-2 opacity-75">
           {/* <img src={OncoChatIcon} alt="" className="h-6" /> */}
-          <img src={ExcelInsightLogo} alt="" className="h-12" />
-          <p className="text-md font-medium text-black text-center">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga,
-            nesciunt?
+          <img src={ExcelInsightLogo} alt="" className="h-16" />
+          <p className="text-md font-semi-bold text-black text-center">
+            Unify Data, Amplify Insights with LLM Precision.
           </p>
+          <div className="mt-moderate flex items-center justify-center gap-6" >
+          {
+            sampleQuestions?.map((item)=>{
+              return <SampleQuestionsCards question={item?.question} hanleSubmitSampleQuestion={handleSubmitMessage} />
+            })
+          }
+          </div>
         </div>
       )}
       <div className="relative px-moderate mb-moderate">
         {showScrollToBottomButton && (
           <button
-            className="absolute -top-10 left-1/2 bg-white h-8 w-8 rounded-full flex flex-col items-center justify-center"
+            className="absolute -top-10 left-1/2 shadow-shadow-md bg-white h-8 w-8 rounded-full flex flex-col items-center justify-center"
             onClick={() => {
               userMessageRef?.current?.scrollIntoView({
                 behavior: "smooth",

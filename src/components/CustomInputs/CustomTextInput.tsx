@@ -22,10 +22,10 @@ export default function CustomTextInput({
       }
       <div
         style={inputBoxStyles}
-        className="h-inputHeightMd w-full bg-primary-background border border-primary-theme rounded-md overflow-hidden flex items-center justify-between gap-4 pl-moderate"
+        className="h-inputHeightMd w-full bg-primary-background border-2 focus-within:border-black border-primary-theme rounded-md overflow-hidden flex items-center justify-between gap-4 pl-moderate"
       >
         {leftIcon && <div className="flex items-center">{leftIcon}</div>}
-        <div className="flex-grow h-full flex items-center">
+        {/* <div className="flex-grow h-full flex items-center"> */}
           <input
             onKeyDown={handleKeyDown}
             type={type}
@@ -41,7 +41,7 @@ export default function CustomTextInput({
               disabled ? "text-dark-grey" : "text-black"
           }`}
           />
-        </div>
+        {/* </div> */}
         {rightIcon && (
           <div className="flex items-center min-w-[45px]">{rightIcon}</div>
         )}

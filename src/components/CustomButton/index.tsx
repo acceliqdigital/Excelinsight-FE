@@ -16,7 +16,7 @@ export default function CustomButton({
 			{":hover": {
 				bgcolor: colors.BLACK
 			}, ...buttonStyles}
-		} disabled={disabled} onClick={handleClick} variant={variant} type={type}>
+		} disabled={disabled || showLoader} onClick={handleClick} variant={variant} type={type}>
 			<div className="flex items-center gap-2">
         {showLoader && <CircularProgress size={20} />}
         {btnChild}

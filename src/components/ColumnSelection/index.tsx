@@ -11,9 +11,9 @@ export default function ColumnSelection({
   handleSelectionForIndex: (index: number) => void;
 }) {
   return (
-    <div className="flex flex-col gap-basic max-w-[20rem]">
+    <div className="grid grid-cols-3 gap-x-4">
       {headerList.map((header, i) => (
-        <div key={header.headerName} className="border-b border-grey py-basic flex flex-row items-center">
+        <div key={header.headerName} className="border-b border-primary-theme py-basic flex flex-row items-center">
           <Checkbox
             sx={{
               py: 0,
@@ -26,7 +26,7 @@ export default function ColumnSelection({
             checked={header.selectionIsPrivate}
             onChange={() => handleSelectionForIndex(i)}
           />
-          <span>{header.headerName}</span>
+          <span className="font-medium" >{header.headerName}</span>
           {header.selectionIsPrivate && (
             <span className="text-yellow capitalize border flex border-yellow rounded-[20px] mx-basic px-basic">
 							<span className="flex text-md-1 align-baseline flex-row justify-center items-center gap-1 mx-1">

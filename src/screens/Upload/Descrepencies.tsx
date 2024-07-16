@@ -1,15 +1,16 @@
 import CustomButton from "@/components/CustomButton";
-import { GenericObjectInterface, UploadFormikProps } from "@/utilities/commonInterface";
+import { GenericObjectInterface } from "@/utilities/commonInterface";
+import { routes } from "@/utilities/routes";
 import { colors } from "@/utilities/themes/colors";
-import { FormikProps } from "formik";
+import { useNavigate } from "react-router-dom";
 
 export default function Descrepencies({
-	formik,
 	discrepencyPayload
 }: {
-	formik: FormikProps<UploadFormikProps>
+	// formik: FormikProps<UploadFormikProps>
 	discrepencyPayload: GenericObjectInterface | null
 }){
+	const navigate = useNavigate();
   return (
 		<div className="flex flex-col justify-start items-center h-full">
 			<div className="w-1/2 my-moderate">
@@ -19,7 +20,7 @@ export default function Descrepencies({
 						<div className="grid grid-cols-2 gap-basic my-large">
 							<div className="bg-primary-theme py-basic px-moderate rounded-md flex flex-col gap-basic">
 								<h5 className="capitalize text-lg-2">missing columns</h5>
-								<h5 className="capitalize text-md-1">number of missing columns: {discrepencyPayload['Missing Columns'].length}</h5>
+								<h5 className="capitalize text-md-1">number of missing columns: {discrepencyPayload['Missing Columns']?.length}</h5>
 							</div>
 							<div className="bg-primary-theme py-basic px-moderate rounded-md flex flex-col gap-basic">
 								<h5 className="capitalize text-lg-2">missing values</h5>
@@ -31,7 +32,7 @@ export default function Descrepencies({
 				<div className="w-[40%] mx-auto">
 					<CustomButton
 						type="button"
-						handleClick={() => formik.setFieldValue('uploadStage', 'chat')}
+						handleClick={() => navigate(routes.HOME)}
 						variant="contained"
 						buttonStyles={{
 							py: 1,

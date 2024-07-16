@@ -1,6 +1,6 @@
 import { SxProps } from "@mui/material";
 import { CSSProperties } from "@mui/material/styles/createMixins";
-import { ReactNode } from 'react'
+import { ReactNode } from "react";
 
 export type inputChangeEventType = React.ChangeEvent<HTMLInputElement>;
 export type inputKeyDownEventType = React.KeyboardEvent<HTMLInputElement>;
@@ -17,15 +17,15 @@ export interface CustomTextInputProp {
   rightIcon?: ReactNode;
   children?: ReactNode;
   inputBoxStyles?: CSSProperties;
-  inputLabel?: string
+  inputLabel?: string;
   type: "text" | "password" | "number";
-  name?: string
+  name?: string;
   disabled?: boolean;
-  defaultValue?:string
+  defaultValue?: string;
   value?: string;
   placeholder?: string;
   handleChange?: (ev: inputChangeEventType) => void;
-  handleKeyDown?: (ev: inputKeyDownEventType) => void
+  handleKeyDown?: (ev: inputKeyDownEventType) => void;
   handleBlur?: (ev: inputChangeEventType) => void;
   inputStyles?: CSSProperties;
 }
@@ -35,10 +35,10 @@ export interface CustomTextAreaProp {
   rightIcon?: ReactNode;
   children?: ReactNode;
   inputBoxStyles?: CSSProperties;
-  inputLabel?: ReactNode
-  name?: string
+  inputLabel?: ReactNode;
+  name?: string;
   disabled?: boolean;
-  defaultValue?:string
+  defaultValue?: string;
   value?: string;
   placeholder?: string;
   handleChange?: (ev: textAreaChangeEventType) => void;
@@ -46,9 +46,9 @@ export interface CustomTextAreaProp {
   inputStyles?: CSSProperties;
 }
 
-export interface HeaderProp{
-  headerName: string,
-  selectionIsPrivate: boolean
+export interface HeaderProp {
+  headerName: string;
+  selectionIsPrivate: boolean;
 }
 
 export type CustomResponse<T> = {
@@ -57,14 +57,23 @@ export type CustomResponse<T> = {
 };
 
 export interface UploadFormikProps {
-  'dataFiles': (File | null)[]
-  'supplementaryFiles': (File | null)[],
-  mergedColummns: HeaderProp[],
-  mergedDF: GenericObjectInterface[][]
-  businessModelDescription: string,
-  businessInsightsReport: string,
-  outputFormatDescription: string,
-  uploadStage: 'upload' |  'formatSpecification' | 'columnDiscard' | 'discardedColumnView' | 'processing' | 'discrepencyDisplay' | 'loading' | 'chat'
+  dataFiles: (File | null)[];
+  supplementaryFiles: (File | null)[];
+  mergedColummns: HeaderProp[];
+  mergedDF: GenericObjectInterface[][];
+  businessModelDescription: string;
+  businessInsightsReport: string;
+  outputFormatDescription: string;
+  fileContext: string;
+  uploadStage:
+    | "upload"
+    | "formatSpecification"
+    | "columnDiscard"
+    | "discardedColumnView"
+    | "processing"
+    | "discrepencyDisplay"
+    | "loading"
+    | "chat";
 }
 
 export interface CustomFileUploadProp {
@@ -72,27 +81,27 @@ export interface CustomFileUploadProp {
   rightIcon?: ReactNode;
   children?: ReactNode;
   inputBoxStyles?: CSSProperties;
-  inputLabel?: ReactNode
-  name?: string
-  selectedFileParent?: File | null
+  inputLabel?: ReactNode;
+  name?: string;
+  selectedFileParent?: File | null;
   disabled?: boolean;
-  defaultValue?:string
+  defaultValue?: string;
   value?: string;
   placeholder?: string;
   handleChange?: (files: FileList) => boolean;
   handleBlur?: (ev: inputChangeEventType) => void;
   inputStyles?: CSSProperties;
-  acceptString: string
+  acceptString: string;
 }
 
 export interface CustomButtonProp {
-	handleClick?: () => void;
-	btnChild: string | ReactNode;
-	buttonStyles?: SxProps;
-	variant?: "outlined" | "contained" | "text";
-	type?: "submit" | "button";
-	disabled?: boolean;
-	showLoader?: boolean;
+  handleClick?: () => void;
+  btnChild: string | ReactNode;
+  buttonStyles?: SxProps;
+  variant?: "outlined" | "contained" | "text";
+  type?: "submit" | "button";
+  disabled?: boolean;
+  showLoader?: boolean;
 }
 
 export interface LottieFileType {

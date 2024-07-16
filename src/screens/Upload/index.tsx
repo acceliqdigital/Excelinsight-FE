@@ -10,7 +10,10 @@ import { colors } from "@/utilities/themes/colors";
 import { useFormik } from "formik";
 import OutputFormat from "@/screens/Upload/outputFormat";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import { showWarningMessage } from "@/utilities/PopupUserExperience/PopupUserExperience";
+import {
+  showErrorMessage,
+  showWarningMessage,
+} from "@/utilities/PopupUserExperience/PopupUserExperience";
 import DiscardColumns from "./DiscardColumns";
 import { CircularProgress } from "@mui/material";
 import {
@@ -27,6 +30,7 @@ import {
   setChatSessionId,
   setMediaDirectory,
 } from "@/redux/reducers/chatReducer";
+import { ApiStatusCodes } from "@/utilities";
 
 export default function Upload() {
   const dispatch = useDispatch();
@@ -44,12 +48,11 @@ export default function Upload() {
       outputFormatDescription: "",
       mergedColummns: [],
       mergedDF: [],
+      fileContext: "",
       uploadStage: "upload",
     },
     onSubmit: async (values, { setSubmitting }) => {
-      console.log(values);
-      setSubmitting(false);
-      console.log("semnding data to backend");
+      setSubmitting(true);
       // resetForm()
       if (formik.values.uploadStage == "formatSpecification") {
         try {
@@ -86,18 +89,27 @@ export default function Upload() {
             API_END_POINTS.INSIGHT_EXCEL_UPLOAD
           );
           console.log(response);
-          const mergedColummns = (
-            response.data["merged_df_columns"] as string[]
-          ).map<HeaderProp>((columnName) => ({
-            headerName: columnName,
-            selectionIsPrivate: false,
-          }));
-          formik.setFieldValue("mergedColummns", mergedColummns);
-          formik.setFieldValue("mergedDF", response.data["merged_df_data"]);
+          if (
+            response.status === ApiStatusCodes.SUCCESS ||
+            response.status === ApiStatusCodes.CREATED
+          ) {
+            const mergedColummns = (
+              response.data["merged_df_columns"] as string[]
+            ).map<HeaderProp>((columnName) => ({
+              headerName: columnName,
+              selectionIsPrivate: false,
+            }));
+            formik.setFieldValue("mergedColummns", mergedColummns);
+            formik.setFieldValue("mergedDF", response.data["merged_df_data"]);
+            formik.setFieldValue("uploadStage", "columnDiscard");
+            formik.setFieldValue("fileContext", response.data?.context);
+          } else {
+            showWarningMessage("Error while uploading your files.");
+          }
         } catch (error) {
-          console.log(error);
+          showErrorMessage(error);
         } finally {
-          formik.setFieldValue("uploadStage", "columnDiscard");
+          setSubmitting(false);
         }
       } else if (formik.values.uploadStage == "columnDiscard") {
         formik.setFieldValue("uploadStage", "loading");
@@ -119,6 +131,7 @@ export default function Upload() {
                   (c) => c.headerName
                 ),
               },
+              context: formik.values.fileContext,
             }),
             API_END_POINTS.INSIGHT_EXCEL_FILTER
           );
@@ -126,7 +139,11 @@ export default function Upload() {
           dispatch(setChatSessionId(response.data["chatsessionid"]));
           dispatch(setMediaDirectory(response.data["MEDIA_ROOT"]));
           formik.setFieldValue("uploadStage", "discrepencyDisplay");
+          setSubmitting(false);
         } catch (error) {
+          setSubmitting(false);
+          console.log(error, "go to upload");
+          
           formik.setFieldValue("uploadStage", "upload");
         }
       }
@@ -134,7 +151,7 @@ export default function Upload() {
   });
   return (
     <div className="flex flex-row grow self-stretch">
-      <div className="bg-secondary-theme w-full grow rounded-md m-basic mr-0">
+      <div className="bg-secondary-theme w-full grow rounded-md my-moderate">
         <form onSubmit={formik.handleSubmit} className="h-full">
           {formik.values.uploadStage == "upload" && (
             <div className="grid grid-cols-2 gap-y-5 gap-x-14 px-xLarge">
@@ -287,13 +304,17 @@ export default function Upload() {
                       py: 1,
                     }}
                     handleClick={() => {
-                      if(formik.values.dataFiles.length < 3){
-                        showWarningMessage('Please upload atleast 3 data files to proceed')
-                        return
+                      if (formik.values.dataFiles.length < 3) {
+                        showWarningMessage(
+                          "Please upload atleast 3 data files to proceed"
+                        );
+                        return;
                       }
-                      if(formik.values.supplementaryFiles.length < 2){
-                        showWarningMessage('Please upload atleast 2 supplementary files to proceed')
-                        return
+                      if (formik.values.supplementaryFiles.length < 2) {
+                        showWarningMessage(
+                          "Please upload atleast 2 supplementary files to proceed"
+                        );
+                        return;
                       }
                       formik.setFieldValue(
                         "uploadStage",
@@ -320,7 +341,7 @@ export default function Upload() {
           {formik.values.uploadStage == "discrepencyDisplay" && (
             <Descrepencies
               discrepencyPayload={discrepencyPayload}
-              formik={formik}
+              // formik={formik}
             />
           )}
           {/* {formik.values.uploadStage == "chat" && (

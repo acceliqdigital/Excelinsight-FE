@@ -19,7 +19,7 @@ export default function CustomTextAreaInput({
       }
       <div
         style={inputBoxStyles}
-        className="min-h-32 w-full bg-primary-background border border-primary-theme rounded-md overflow-hidden flex flex-col items-center justify-between gap-4 pl-moderate py-basic"
+        className="min-h-32 w-full bg-primary-background border-2 border-primary-theme focus-within:border-black rounded-md overflow-hidden flex flex-col items-center justify-between gap-4 pl-moderate py-basic"
       >
         {leftIcon && <div className="flex items-center">{leftIcon}</div>}
         <div className="flex-grow h-full w-full flex flex-col items-center">

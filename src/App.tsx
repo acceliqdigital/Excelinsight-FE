@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "./redux/combineStore";
 import DashboardChats from "./screens/Dashboard/DashboardChats";
 import TopNavbar from "./components/AppBar/TopNavbar";
+import BusinessInsightAndSuggestions from "./screens/Dashboard/BusinessInsighsAndSuggestions";
 
 function App() {
   const { userToken } = useSelector(
@@ -23,7 +24,7 @@ function App() {
       <>
         <ToastContainer />
         <Routes>
-          <Route path={routes.HOME}>
+          <Route path={routes.LOGIN}>
             <Route element={<Authentication />}>
               <Route index element={<LoginForm />} />
               <Route path={routes.SIGNUP} element={<SignupForm />} />
@@ -35,7 +36,7 @@ function App() {
               <Route path={routes.PROFILE_KYC} element={<ProfileDetails />} />
             </Route>
           </Route>
-          <Route path="*" element={<Navigate to={routes.HOME} />} />
+          <Route path="*" element={<Navigate to={routes.LOGIN} />} />
         </Routes>
       </>
     );
@@ -48,6 +49,7 @@ function App() {
           <Route path={routes.HOME} element={<TopNavbar />}>
             <Route index element={<DashboardChats />} />
             <Route path={routes.UPLOAD} element={<Upload />} />
+            <Route path={routes.BUSINESS_INSIGHTS} element={<BusinessInsightAndSuggestions />} />
           </Route>
           <Route path="*" element={<Navigate to={routes.HOME} />} />
         </Routes>

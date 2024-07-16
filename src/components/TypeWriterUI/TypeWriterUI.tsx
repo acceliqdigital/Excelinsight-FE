@@ -16,7 +16,7 @@ function TypeWriterUI({
 
   useEffect(() => {
     if (useTypeWriter) {
-      if (currentIndex < botResponse.length) {
+      if (currentIndex < botResponse?.length) {
         setShowCursor(true);
         const timeout = setTimeout(() => {
           setCurrentText((prevText) => prevText + botResponse[currentIndex]);

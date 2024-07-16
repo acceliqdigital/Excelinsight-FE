@@ -1,30 +1,18 @@
-import { UploadFormikProps } from "@/utilities/commonInterface";
-import { FormikProps } from "formik";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import CustomTextAreaInput from "@/components/CustomInputs/CustomTextAreaInput";
 import CustomButton from "@/components/CustomButton";
 import { colors } from "@/utilities/themes/colors";
+import CustomTextInput from "@/components/CustomInputs/CustomTextInput";
 
-export default function OutputFormat({
-  formik,
-}: {
-  formik: FormikProps<UploadFormikProps>;
-}) {
+export default function BusinessInsightAndSuggestions() {
   return (
     <>
       <div className="flex flex-row px-xLarge py-large">
-        <span
-          className="text-black cursor-pointer mr-1 leading-lg-1"
-          onClick={() => formik.setFieldValue("uploadStage", "upload")}
-        >
-          <ArrowBackRoundedIcon />
-        </span>
         <div className="grow">
           <h2 className="text-lg-1 font-semi-bold">Specify Output Format</h2>
           <h3 className="text-md-1 text-grey ">
             Select the desired output format for your data.
           </h3>
-          <div className="flex flex-col gap-4 mt-moderate">
+          <form className="flex flex-col gap-4 mt-moderate">
             <div>
               <CustomTextAreaInput
                 inputBoxStyles={{
@@ -33,9 +21,9 @@ export default function OutputFormat({
                 inputStyles={{
                   backgroundColor: colors.SECONDARY_THEME,
                 }}
-                handleChange={formik.handleChange}
+                // handleChange={}
                 name="businessInsightsReport"
-                value={formik.values.businessInsightsReport}
+                // value={}
                 inputLabel={
                   <span className="font-semi-bold text-md-1 tracking-wide">
                     Business Insights Report
@@ -51,9 +39,9 @@ export default function OutputFormat({
                 inputStyles={{
                   backgroundColor: colors.SECONDARY_THEME,
                 }}
-                value={formik.values.outputFormatDescription}
+                // value={}
                 name="outputFormatDescription"
-                handleChange={formik.handleChange}
+                // handleChange={}
                 inputLabel={
                   <span className="font-semi-bold text-md-1 tracking-wide">
                     Describe Output Format
@@ -61,9 +49,25 @@ export default function OutputFormat({
                 }
               />
             </div>
+            <div>
+              <CustomTextInput
+                inputLabel={"Email"}
+                placeholder="Enter your email"
+                inputBoxStyles={{
+                  backgroundColor: colors.SECONDARY_THEME,
+                }}
+                inputStyles={{
+                  backgroundColor: colors.SECONDARY_THEME,
+                }}
+                // value={}
+                name="Email"
+                // handleChange={}
+                type="text"
+              />
+            </div>
             <div className="w-[40%] mx-auto">
               <CustomButton
-                showLoader={formik.isSubmitting}
+                // showLoader={}
                 type="submit"
                 variant="contained"
                 buttonStyles={{
@@ -74,7 +78,7 @@ export default function OutputFormat({
                 btnChild={<span>Next</span>}
               />
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </>

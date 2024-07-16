@@ -12,11 +12,12 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { Outlet } from "react-router-dom";
 import { colors } from "@/utilities";
-import { AccountCircle, EditNoteOutlined, Logout } from "@mui/icons-material";
-import { ExcelInsightLogo } from "@/assets";
+import { EditNoteOutlined, Logout } from "@mui/icons-material";
+import { DummyImage, ExcelInsightLogo } from "@/assets";
 import ExcelIcon from "../ExcelIcon/ExcelIcon";
 import { useDispatch } from "react-redux";
 import { AppDispatch, resetState } from "@/redux/combineStore";
+// import { routes } from "@/utilities/routes";
 
 const drawerWidth = 240;
 const appBarHeight = 64;
@@ -89,7 +90,8 @@ export default function TopNavbar() {
               <h6 className="text-sm font-medium">johnshell55@email.com</h6>
             </div>
             <div className="flex flex-col justify-center p-basic">
-              <AccountCircle style={{ color: colors.BLACK, fontSize: 36 }} />
+              {/* <AccountCircle style={{ color: colors.BLACK, fontSize: 36 }} /> */}
+              <img src={DummyImage} alt="" className="h-10" />
             </div>
           </div>
         </Toolbar>
@@ -119,7 +121,7 @@ export default function TopNavbar() {
       >
         {/* <DrawerHeader></DrawerHeader>
         <Divider /> */}
-        <List>
+        <List >
           <ListItem disablePadding>
             <ListItemButton>
               <ListItemText
@@ -171,7 +173,7 @@ export default function TopNavbar() {
         </List>
       </Drawer>
 
-      <Main className="flex flex-col" open={open}>
+      <Main className="flex flex-col bg-secondary-theme" open={open}>
         <Outlet />
       </Main>
     </Box>
