@@ -17,13 +17,14 @@ import {
 } from "@mui/icons-material";
 import style from "./dashboardChatsStyles.module.scss";
 import ExcelIcon from "@/components/ExcelIcon/ExcelIcon";
-import LottieAnimationProvider from "@/components/LottieProvider/LottieAnimationProvider";
+// import LottieAnimationProvider from "@/components/LottieProvider/LottieAnimationProvider";
 import TypeWriterUI from "@/components/TypeWriterUI/TypeWriterUI";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/combineStore";
 import { useNavigate } from "react-router-dom";
 import { routes } from "@/utilities/routes";
+import { CircularProgress } from "@mui/material";
 export interface ChatSpaceInput {
   query: string;
 }
@@ -66,12 +67,13 @@ const BotMessageComponent = ({
       <div className={`max-w-[95%] px-basic pt-[2px]`}>
         {/* <h4 className={`text-black`}>Cielo</h4> */}
         {isBotMessageLoading && msg === "" ? (
-          <LottieAnimationProvider
-            animationFile={AnimatedLoader}
-            height={55}
-            width={55}
-            lottieStyle={{ paddingLeft: 8, marginTop: -12 }}
-          />
+          // <LottieAnimationProvider
+          //   animationFile={AnimatedLoader}
+          //   height={55}
+          //   width={55}
+          //   lottieStyle={{ paddingLeft: 8, marginTop: -12 }}
+          // />
+          <CircularProgress/>
         ) : isImage ? (
           <img
             src={`data:image/png;base64, ${msg}`}
