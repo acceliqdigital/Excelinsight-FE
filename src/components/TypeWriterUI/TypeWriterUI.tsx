@@ -21,9 +21,6 @@ function TypeWriterUI({
         const timeout = setTimeout(() => {
           setCurrentText((prevText) => prevText + botResponse[currentIndex]);
           setCurrentIndex((prevIndex) => prevIndex + 1);
-          // if (chatCursorRef.current) {
-          //   chatCursorRef.current.scrollIntoView({ behavior: "instant" });
-          // }
         }, delay);
 
         return () => clearTimeout(timeout);
