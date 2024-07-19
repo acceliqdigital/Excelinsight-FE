@@ -18,7 +18,7 @@ export default function CustomButton({
 			}, ...buttonStyles}
 		} disabled={disabled || showLoader} onClick={handleClick} variant={variant} type={type}>
 			<div className="flex items-center gap-2">
-        {showLoader && <CircularProgress size={20} />}
+        {showLoader && <CircularProgress size={18} />}
         {btnChild}
       </div>
 		</Button>

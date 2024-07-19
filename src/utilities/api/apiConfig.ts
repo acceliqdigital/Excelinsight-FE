@@ -10,13 +10,12 @@ let BASE_URL = "";
 // BASE_URL = 'http://10.44.22.83:8008/'
 // BASE_URL = "http://localhost:8008/";
 if (import.meta.env.DEV) {
-//   BASE_URL = 'http://10.44.28.182:8008/'
-  BASE_URL = "http://localhost:8008/";
+  //   BASE_URL = 'http://10.44.28.182:8008/'
+  BASE_URL = "http://10.44.22.83:8008/";
 } else {
   //   BASE_URL = 'http://10.44.17.18:8001/'
   BASE_URL = "http://localhost:8008/";
 }
-
 const headersList = {
   Accept: "*/*",
   "Content-Type": "application/x-www-form-urlencoded",
@@ -32,6 +31,7 @@ const API_END_POINTS = {
   SIGNUP: "api/register/",
   INSIGHT_EXCEL_UPLOAD: "insights/files/",
   INSIGHT_EXCEL_FILTER: "insights/filter/",
+  EXCEL_QUESTIONS: "chat/questions/",
   EXCEL_CHATS: "chat/ask/",
 };
 
@@ -89,7 +89,7 @@ const fetchData = async <T>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any,
   endPoint: string,
-  baseUrl?: string
+  baseUrl: string = BASE_URL
 ): Promise<CustomResponse<T>> => {
   try {
     const response = await makeApiRequest<T>(

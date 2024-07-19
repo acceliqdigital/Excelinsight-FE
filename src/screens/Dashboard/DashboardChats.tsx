@@ -1,10 +1,13 @@
 import CustomTextInput from "@/components/CustomInputs/CustomTextInput";
 import {
   API_END_POINTS,
+  ApiStatusCodes,
   BASE_URL,
   colors,
+  fetchData,
   GenericObjectInterface,
   headersList,
+  postData,
 } from "@/utilities";
 import { useFormik } from "formik";
 import CustomButton from "@/components/CustomButton";
@@ -25,6 +28,7 @@ import { RootState } from "@/redux/combineStore";
 import { useNavigate } from "react-router-dom";
 import { routes } from "@/utilities/routes";
 import { CircularProgress } from "@mui/material";
+import CustomLoader from "@/components/customLoaders/CustomLoader";
 export interface ChatSpaceInput {
   query: string;
 }
@@ -33,6 +37,7 @@ const mapSender = {
   USER: "user",
   BOT: "bot",
 };
+const initialQuestionsType = "initial_questions";
 
 const BotMessageComponent = ({
   index,
@@ -41,7 +46,9 @@ const BotMessageComponent = ({
   userMessageRef,
   isBotMessageLoading,
   handleAnimFinished,
+  metaData,
   showTypeWriterAnimation,
+  handleRespondInitialQuestion,
 }: {
   msg: string;
   isImage: boolean;
@@ -50,7 +57,9 @@ const BotMessageComponent = ({
   userMessageRef: LegacyRef<HTMLDivElement>;
   isBotMessageLoading?: boolean;
   handleAnimFinished: () => void;
+  metaData?: { type: "initial_questions"; questionId: string };
   showTypeWriterAnimation: boolean;
+  handleRespondInitialQuestion: (param: boolean, questionId: string) => void;
 }) => {
   return (
     <div
@@ -73,7 +82,8 @@ const BotMessageComponent = ({
           //   width={55}
           //   lottieStyle={{ paddingLeft: 8, marginTop: -12 }}
           // />
-          <CircularProgress/>
+          // <CircularProgress size={20} />
+          <CustomLoader/>
         ) : isImage ? (
           <img
             src={`data:image/png;base64, ${msg}`}
@@ -112,6 +122,49 @@ const BotMessageComponent = ({
             {msg}
           </div>
         )}
+
+        {metaData &&
+          metaData.type === initialQuestionsType &&
+          userMessageRef !== null && (
+            <>
+              <div className="flex items-center gap-3 mt-large">
+                {/* <span className="text-md-1 font-medium italic text-grey" >Select your answer:</span> */}
+                <CustomButton
+                  btnChild="Yes"
+                  variant="contained"
+                  buttonStyles={{
+                    borderRadius: "99px",
+                    bgcolor: colors.BLACK,
+                    height: "30px",
+                    textTransform: "capitalize",
+                  }}
+                  handleClick={useCallback(
+                    () =>
+                      handleRespondInitialQuestion(true, metaData.questionId),
+                    []
+                  )}
+                />
+                <CustomButton
+                  btnChild="No"
+                  variant="outlined"
+                  buttonStyles={{
+                    borderRadius: "99px",
+                    bgcolor: "transparent",
+                    borderColor: colors.BLACK,
+                    ":hover": { borderColor: colors.BLACK },
+                    color: colors.BLACK,
+                    height: "30px",
+                    textTransform: "capitalize",
+                  }}
+                  handleClick={useCallback(
+                    () =>
+                      handleRespondInitialQuestion(false, metaData.questionId),
+                    []
+                  )}
+                />
+              </div>
+            </>
+          )}
         <div ref={userMessageRef} className="h-1 w-1 opacity-0" />
       </div>
     </div>
@@ -159,28 +212,22 @@ const UserMessageComponent = ({
   );
 };
 
-const SampleQuestionsCards = ({question, hanleSubmitSampleQuestion}:{question:string; hanleSubmitSampleQuestion:(question:string)=>void}) => {
+const SampleQuestionsCards = ({
+  question,
+  hanleSubmitSampleQuestion,
+}: {
+  question: string;
+  hanleSubmitSampleQuestion: (question: string) => void;
+}) => {
   return (
-    <button onClick={()=>hanleSubmitSampleQuestion(question)} className="bg-white shadow-shadow-md flex flex-col justify-center p-moderate rounded-lg w-[250px] h-[100px]">
-      <span  className="font-medium text-md-1">{question}</span>
+    <button
+      onClick={() => hanleSubmitSampleQuestion(question)}
+      className="bg-white shadow-shadow-md flex flex-col justify-center p-moderate rounded-lg w-[250px] h-[100px]"
+    >
+      <span className="font-medium text-md-1">{question}</span>
     </button>
-  )
-}
-
-const sampleQuestions = [
-  {
-    id: 0,
-    question :"Tell me something about the file uploaded.",
-  },
-  {
-    id: 1,
-    question :"Are there any columns with missing values ?",
-  },
-  {
-    id: 2,
-    question :"Can you plot the charts based on the provided files ?",
-  }
-]
+  );
+};
 
 export default function ChatSpace() {
   const navigate = useNavigate();
@@ -195,6 +242,11 @@ export default function ChatSpace() {
   const [showScrollToBottomButton, setShowScrollToBottomButton] =
     useState(false);
   const [showTypewriterAnimation, setShowTypewriterAnimation] = useState(false);
+  const [initialQuestionLoading, setInitialQuestionLoading] = useState(false);
+  const [initialQuestions, setInitialQuestions] = useState<
+    GenericObjectInterface[]
+  >([]);
+  const [initialQuestionsCompleted, setInitialQuestionsCompleted] = useState(false);
   const userMessageRef = useRef<HTMLDivElement>(null);
   const scrollingDivRef = useRef<HTMLDivElement>(null);
   const formik = useFormik<ChatSpaceInput>({
@@ -218,12 +270,111 @@ export default function ChatSpace() {
     }
   }, [chatData, showScrollToBottomButton]);
 
-  const handleSubmitMessage = useCallback((query: string) => {
-    if (query?.length > 0) {
-      formik.setFieldValue("query", "");
-      initializeMessage(query);
+  const handleStartQuestioning = async () => {
+    setInitialQuestionLoading(true);
+    try {
+      const headerList = {
+        ...headersList,
+        Authorization: `Token ${userToken}`,
+      };
+      const response: GenericObjectInterface = await fetchData(
+        headerList,
+        null,
+        `${API_END_POINTS.EXCEL_QUESTIONS}?sessionid=${chatSessionId}`
+      );
+      if (response.status === ApiStatusCodes.SUCCESS) {
+        setInitialQuestions(
+          response?.data?.filter(
+            (el: GenericObjectInterface) => !el?.completed_status
+          )
+        );
+        setTimeout(() => {
+          setChatData([
+            {
+              id: chatData?.length + 1,
+              sender: mapSender.BOT,
+              message: `${
+                response?.data?.find(
+                  (el: GenericObjectInterface) => !el?.completed_status
+                )?.question
+              }`,
+              meta: {
+                type: initialQuestionsType,
+                questionId: response?.data?.find(
+                  (el: GenericObjectInterface) => !el?.completed_status
+                )?.questionid,
+              },
+            },
+          ]);
+        }, 1000);
+      }
+    } catch (error) {
+    } finally {
+      setInitialQuestionLoading(false);
     }
-  }, [chatData]);
+  };
+
+  const handleAnswerInitialQuestions = async (
+    reply: boolean,
+    qestionId: string
+  ) => {
+    const isLastQuestion =
+      initialQuestions?.findIndex((item) => item?.questionid === qestionId) ===
+      initialQuestions?.length - 1;
+
+    setChatData((prev) => [
+      ...prev,
+      {
+        id: chatData?.length + 1,
+        sender: mapSender.USER,
+        message: `${reply ? "Yes." : "No."}`,
+      },
+    ]);
+    try {
+      const headerList = {
+        ...headersList,
+        Authorization: `Token ${userToken}`,
+      };
+      const data = {
+        questionid: qestionId,
+        process_query: reply ? "True" : "False",
+      };
+      await postData(
+        headerList,
+        data,
+        `${API_END_POINTS.EXCEL_QUESTIONS}?sessionid=${chatSessionId}`
+      );
+      if (!isLastQuestion) {
+        setTimeout(() => {
+          setChatData((prev) => [
+            ...prev,
+            {
+              id: chatData?.length + 1,
+              sender: mapSender.BOT,
+              message: `${initialQuestions[prev?.length / 2]?.question}`,
+              meta: {
+                type: initialQuestionsType,
+                questionId: initialQuestions[prev?.length / 2]?.questionid,
+              },
+            },
+          ]);
+        }, 1000);
+      }
+      else{
+        setInitialQuestionsCompleted(true);
+      }
+    } catch (error) {}
+  };
+
+  const handleSubmitMessage = useCallback(
+    (query: string) => {
+      if (query?.length > 0) {
+        formik.setFieldValue("query", "");
+        initializeMessage(query);
+      }
+    },
+    [chatData]
+  );
 
   const initializeMessage = (message: string) => {
     setChatData((prevData) => [
@@ -314,7 +465,8 @@ export default function ChatSpace() {
           position: "absolute",
           right: 20,
           top: 15,
-          zIndex: 10
+          zIndex: 10,
+          display: initialQuestionsCompleted ? "flex" : "none"
         }}
         handleClick={useCallback(() => {
           navigate(routes.BUSINESS_INSIGHTS);
@@ -344,11 +496,13 @@ export default function ChatSpace() {
                       index={index}
                       msg={item.message}
                       isImage={item?.isImage}
+                      metaData={item?.meta}
                       isBotMessageLoading={
                         botMessageLoading &&
                         index === chatData?.length - 1 &&
                         index !== 0
                       }
+                      // isLatest = {index === chatData?.length -1}
                       userMessageRef={
                         index === chatData?.length - 1 ? userMessageRef : null
                       }
@@ -357,6 +511,9 @@ export default function ChatSpace() {
                         showTypewriterAnimation &&
                         index === chatData?.length - 1 &&
                         index !== 0
+                      }
+                      handleRespondInitialQuestion={
+                        handleAnswerInitialQuestions
                       }
                     />
                   );
@@ -376,19 +533,24 @@ export default function ChatSpace() {
           </div>
         </>
       ) : (
-        <div className="grow flex flex-col items-center justify-center gap-2 opacity-75">
-          {/* <img src={OncoChatIcon} alt="" className="h-6" /> */}
-          <img src={ExcelInsightLogo} alt="" className="h-16" />
-          <p className="text-md font-semi-bold text-black text-center">
-            Unify Data, Amplify Insights with LLM Precision.
+        <div className="grow flex flex-col items-center justify-center gap-4 opacity-75">
+          <span className="text-lg-1 font-semi-bold">Welcome to,</span>
+          <img src={ExcelInsightLogo} alt="" className="h-24" />
+          <p className="text-md font-semi-bold text-black text-center w-1/2">
+            Before you start chatting with our AI, we need you to answer a few
+            questions. This will help us provide you with a better and more
+            personalized experience. Thank you for your cooperation!
           </p>
-          <div className="mt-moderate flex items-center justify-center gap-6" >
-          {
-            sampleQuestions?.map((item)=>{
-              return <SampleQuestionsCards question={item?.question} hanleSubmitSampleQuestion={handleSubmitMessage} />
-            })
-          }
-          </div>
+          <CustomButton
+            variant="contained"
+            showLoader={initialQuestionLoading}
+            buttonStyles={{
+              backgroundColor: colors.BLACK,
+              textTransform: "capitalize",
+            }}
+            handleClick={handleStartQuestioning}
+            btnChild={"Continue"}
+          />
         </div>
       )}
       <div className="relative px-moderate mb-moderate">
@@ -404,7 +566,7 @@ export default function ChatSpace() {
             <KeyboardArrowDown />
           </button>
         )}
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={initialQuestionsCompleted ? formik.handleSubmit : ()=>null}>
           <CustomTextInput
             name="query"
             value={formik.values.query}
@@ -426,6 +588,7 @@ export default function ChatSpace() {
                 }
               />
             }
+            disabled={!initialQuestionsCompleted}
             placeholder="Ask anything!"
             type={"text"}
             inputStyles={{
