@@ -306,7 +306,7 @@ export default function ChatSpace() {
               },
             },
           ]);
-        }, 1000);
+        }, 500);
       }
     } catch (error) {
     } finally {
@@ -358,7 +358,7 @@ export default function ChatSpace() {
               },
             },
           ]);
-        }, 1000);
+        }, 500);
       }
       else{
         setInitialQuestionsCompleted(true);
