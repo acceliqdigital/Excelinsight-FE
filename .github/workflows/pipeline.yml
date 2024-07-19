@@ -10,10 +10,7 @@ jobs:
   build:
     runs-on: bolt
     steps:
-      - name: Cleanup Workspace
-        run: |
-          echo " Cleaning Up Workspace"
-          echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S rm -rf * 
+      - name: Checkout 
       - uses: actions/checkout@v4 
        
   CleanUp:
