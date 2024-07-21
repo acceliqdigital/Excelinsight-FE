@@ -13,7 +13,8 @@ import {
   textAreaChangeEventType,
   ArrayOfStringType,
   lottieAnimProviderProptypes,
-  TypeWriterUIPropTypes
+  TypeWriterUIPropTypes,
+  formSubmitEventType
 } from "./commonInterface/index";
 import { constants } from "./constants/index";
 import { colors } from "./themes/colors";
@@ -55,5 +56,6 @@ export type {
   textAreaChangeEventType,
   ArrayOfStringType,
   lottieAnimProviderProptypes,
-  TypeWriterUIPropTypes
+  TypeWriterUIPropTypes,
+  formSubmitEventType
 };

@@ -6,6 +6,7 @@ export type inputChangeEventType = React.ChangeEvent<HTMLInputElement>;
 export type inputKeyDownEventType = React.KeyboardEvent<HTMLInputElement>;
 export type textAreaChangeEventType = React.ChangeEvent<HTMLTextAreaElement>;
 export type KeybordEventType = React.KeyboardEvent<HTMLInputElement>;
+export type formSubmitEventType = React.FormEvent<HTMLFormElement>;
 
 export type ArrayOfStringType = string[];
 export interface GenericObjectInterface {

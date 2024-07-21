@@ -11,7 +11,7 @@ import {
 } from "@/utilities";
 import { useFormik } from "formik";
 import CustomButton from "@/components/CustomButton";
-import { AnimatedLoader, DummyImage, ExcelInsightLogo } from "@/assets";
+import { DummyImage, ExcelInsightLogo } from "@/assets";
 import { LegacyRef, useCallback, useEffect, useRef, useState } from "react";
 import {
   AccountCircle,
@@ -27,7 +27,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/combineStore";
 import { useNavigate } from "react-router-dom";
 import { routes } from "@/utilities/routes";
-import { CircularProgress } from "@mui/material";
 import CustomLoader from "@/components/customLoaders/CustomLoader";
 export interface ChatSpaceInput {
   query: string;
@@ -83,7 +82,7 @@ const BotMessageComponent = ({
           //   lottieStyle={{ paddingLeft: 8, marginTop: -12 }}
           // />
           // <CircularProgress size={20} />
-          <CustomLoader/>
+          <CustomLoader />
         ) : isImage ? (
           <img
             src={`data:image/png;base64, ${msg}`}
@@ -246,7 +245,8 @@ export default function ChatSpace() {
   const [initialQuestions, setInitialQuestions] = useState<
     GenericObjectInterface[]
   >([]);
-  const [initialQuestionsCompleted, setInitialQuestionsCompleted] = useState(false);
+  const [initialQuestionsCompleted, setInitialQuestionsCompleted] =
+    useState(false);
   const userMessageRef = useRef<HTMLDivElement>(null);
   const scrollingDivRef = useRef<HTMLDivElement>(null);
   const formik = useFormik<ChatSpaceInput>({
@@ -359,8 +359,7 @@ export default function ChatSpace() {
             },
           ]);
         }, 500);
-      }
-      else{
+      } else {
         setInitialQuestionsCompleted(true);
       }
     } catch (error) {}
@@ -466,7 +465,7 @@ export default function ChatSpace() {
           right: 20,
           top: 15,
           zIndex: 10,
-          display: initialQuestionsCompleted ? "flex" : "none"
+          display: initialQuestionsCompleted ? "flex" : "none",
         }}
         handleClick={useCallback(() => {
           navigate(routes.BUSINESS_INSIGHTS);
@@ -566,7 +565,7 @@ export default function ChatSpace() {
             <KeyboardArrowDown />
           </button>
         )}
-        <form onSubmit={initialQuestionsCompleted ? formik.handleSubmit : ()=>null}>
+        <form onSubmit={formik.handleSubmit}>
           <CustomTextInput
             name="query"
             value={formik.values.query}
@@ -574,6 +573,7 @@ export default function ChatSpace() {
             rightIcon={
               <CustomButton
                 type="submit"
+                disabled={!initialQuestionsCompleted}
                 buttonStyles={{
                   border: "none",
                   ":hover": {
