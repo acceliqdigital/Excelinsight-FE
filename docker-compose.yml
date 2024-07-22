@@ -1,6 +1,6 @@
 # version: "3.8"
 services:
-  bh-dev:
+  app-dev:
     image: excel-web-fe
     build:
       context: .
@@ -14,7 +14,7 @@ services:
       - "5173:5173"
     container_name: excel-web-fe-c
 
-  bh-prod: 
+  app-prod: 
       container_name: "excel-web-fe-c"
       image: "excel-web-fe"
       build:
