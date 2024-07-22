@@ -10,11 +10,12 @@ COPY package.json .
 
 RUN npm install -g npm@10.7.0
 
-# Install all the required dependencies in the node_modules
-RUN npm install
-
 # Copy your application files (Except node_modules and build files, look .dockerignore file)
 COPY . .
+
+# Install all the required dependencies in the node_modules
+RUN rm -rf node_modules
+RUN npm install
 
 # Expose the development server port (e.g., 3000)
 EXPOSE 5173
