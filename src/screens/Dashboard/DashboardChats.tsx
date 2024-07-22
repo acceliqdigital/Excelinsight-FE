@@ -28,6 +28,8 @@ import { RootState } from "@/redux/combineStore";
 import { useNavigate } from "react-router-dom";
 import { routes } from "@/utilities/routes";
 import CustomLoader from "@/components/customLoaders/CustomLoader";
+import markdownit from 'markdown-it'
+
 export interface ChatSpaceInput {
   query: string;
 }
@@ -60,6 +62,8 @@ const BotMessageComponent = ({
   showTypeWriterAnimation: boolean;
   handleRespondInitialQuestion: (param: boolean, questionId: string) => void;
 }) => {
+  const md = markdownit()
+
   return (
     <div
       // ref={userMessageRef}
@@ -109,7 +113,7 @@ const BotMessageComponent = ({
           </div>
         ) : (
           <div
-            className={`text-justify rounded-md lg:text-[16px] text-md-1 px-basic min-w-[100px] overflow-hidden font-medium break-words`}
+            className={`${style.botResponseMarkdown} text-justify rounded-md lg:text-[16px] text-md-1 px-basic min-w-[100px] overflow-hidden font-medium break-words`}
             style={{
               color:
                 msg ===
@@ -117,8 +121,9 @@ const BotMessageComponent = ({
                   ? "rgba(255, 40, 40, 1)"
                   : colors.BLACK,
             }}
+            dangerouslySetInnerHTML={{__html: md.render(msg)}}
           >
-            {msg}
+            {/* {md.render(msg)} */}
           </div>
         )}
 

@@ -310,9 +310,10 @@ export default function Upload() {
                         );
                         return;
                       }
-                      if (formik.values.supplementaryFiles.length < 2) {
+                      
+                      if (formik.values.supplementaryFiles?.filter((el)=>el !== null).length === 0) {
                         showWarningMessage(
-                          "Please upload atleast 2 supplementary files to proceed"
+                          "Please upload atleast 1 supplementary files to proceed"
                         );
                         return;
                       }
