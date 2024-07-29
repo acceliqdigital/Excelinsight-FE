@@ -10,11 +10,11 @@ services:
       - .:/app
       - /app/node_modules
     ports:
-      - "5173:5173"
-    container_name: excel-web-fe-c
+      - "5175:5173"
+    container_name: excel-web-fe
 
   app-prod: 
-      container_name: "excel-web-fe-c"
+      container_name: "excel-web-fe"
       image: "excel-web-fe"
       build:
         context: .
