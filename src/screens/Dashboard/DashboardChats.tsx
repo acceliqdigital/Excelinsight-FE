@@ -473,7 +473,7 @@ export default function ChatSpace() {
           display: initialQuestionsCompleted ? "flex" : "none",
         }}
         handleClick={useCallback(() => {
-          navigate(routes.BUSINESS_INSIGHTS);
+          navigate(`${routes.UPLOAD}`);
         }, [])}
         btnChild="Next >"
       />

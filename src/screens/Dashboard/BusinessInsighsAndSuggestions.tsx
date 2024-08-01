@@ -2,8 +2,11 @@ import CustomTextAreaInput from "@/components/CustomInputs/CustomTextAreaInput";
 import CustomButton from "@/components/CustomButton";
 import { colors } from "@/utilities/themes/colors";
 import CustomTextInput from "@/components/CustomInputs/CustomTextInput";
+import { useNavigate } from "react-router-dom";
+import { routes } from "@/utilities/routes";
 
 export default function BusinessInsightAndSuggestions() {
+  const navigator = useNavigate()
   return (
     <>
       <div className="flex flex-row px-xLarge py-large">
@@ -67,8 +70,9 @@ export default function BusinessInsightAndSuggestions() {
             </div>
             <div className="w-[40%] mx-auto">
               <CustomButton
-                // showLoader={}
-                type="submit"
+                handleClick={() => {
+                  navigator(`/${routes.UPLOAD}`)
+                }}
                 variant="contained"
                 buttonStyles={{
                   py: 1,
