@@ -63,7 +63,6 @@ const BotMessageComponent = ({
   handleRespondInitialQuestion: (param: boolean, questionId: string) => void;
 }) => {
   const md = markdownit()
-
   return (
     <div
       // ref={userMessageRef}
@@ -78,7 +77,7 @@ const BotMessageComponent = ({
       </div>
       <div className={`max-w-[95%] px-basic pt-[2px]`}>
         {/* <h4 className={`text-black`}>Cielo</h4> */}
-        {isBotMessageLoading && msg === "" ? (
+        {(isBotMessageLoading && msg === "") ? (
           // <LottieAnimationProvider
           //   animationFile={AnimatedLoader}
           //   height={55}
@@ -129,9 +128,10 @@ const BotMessageComponent = ({
 
         {metaData &&
           metaData.type === initialQuestionsType &&
-          userMessageRef !== null && (
+          // userMessageRef !== null && (
+            true && (
             <>
-              <div className="flex items-center gap-3 mt-large">
+              <div className="hidden items-center gap-3 mt-large">
                 {/* <span className="text-md-1 font-medium italic text-grey" >Select your answer:</span> */}
                 <CustomButton
                   btnChild="Yes"
@@ -245,6 +245,7 @@ export default function ChatSpace() {
   const [chatData, setChatData] = useState<GenericObjectInterface[]>([]);
   const [showScrollToBottomButton, setShowScrollToBottomButton] =
     useState(false);
+  const [showBotMessageLoader, setShowBotMessageLoader] = useState<boolean | undefined>(false)
   const [showTypewriterAnimation, setShowTypewriterAnimation] = useState(false);
   const [initialQuestionLoading, setInitialQuestionLoading] = useState(false);
   const [initialQuestions, setInitialQuestions] = useState<
@@ -260,7 +261,20 @@ export default function ChatSpace() {
     },
     enableReinitialize: true,
     onSubmit: (values) => {
-      handleSubmitMessage(values.query);
+      console.log(initialQuestionsCompleted, 'complrter')
+      if(initialQuestionsCompleted){
+        handleSubmitMessage(values.query);
+      } else {
+        const botMessage = chatData.filter(data => data.sender == 'bot')
+        formik.setSubmitting(true)
+        formik.resetForm()
+        setShowBotMessageLoader(true);
+        handleAnswerInitialQuestions(formik.values.query, botMessage[botMessage.length-1].meta.questionId).then(() => {
+        }).finally(() => {
+          setShowBotMessageLoader(false);
+          formik.setSubmitting(false)
+        })
+      }
     },
   });
 
@@ -320,7 +334,7 @@ export default function ChatSpace() {
   };
 
   const handleAnswerInitialQuestions = async (
-    reply: boolean,
+    reply: string,
     qestionId: string
   ) => {
     const isLastQuestion =
@@ -332,7 +346,7 @@ export default function ChatSpace() {
       {
         id: chatData?.length + 1,
         sender: mapSender.USER,
-        message: `${reply ? "Yes." : "No."}`,
+        message: `${reply}`,
       },
     ]);
     try {
@@ -342,7 +356,7 @@ export default function ChatSpace() {
       };
       const data = {
         questionid: qestionId,
-        process_query: reply ? "True" : "False",
+        process_query: reply,
       };
       await postData(
         headerList,
@@ -366,8 +380,19 @@ export default function ChatSpace() {
         }, 500);
       } else {
         setInitialQuestionsCompleted(true);
+        setShowBotMessageLoader(undefined)
+        setChatData((prev) => [
+          ...prev,
+          {
+            id: chatData?.length + 1,
+            sender: mapSender.BOT,
+            message: `Clarification question completed please ask, any further queries...`,
+          }
+        ])
       }
-    } catch (error) {}
+    } catch (error) {
+      // console.log(error)
+    }
   };
 
   const handleSubmitMessage = useCallback(
@@ -404,7 +429,6 @@ export default function ChatSpace() {
 
   const sendMessageAPI = async (message: string) => {
     setBotMessageLoading(true);
-
     try {
       const data = {
         message: message,
@@ -455,7 +479,7 @@ export default function ChatSpace() {
   const handleAnimFinished = useCallback(() => {
     setShowTypewriterAnimation(false);
   }, []);
-
+  console.log(chatData)
   return (
     <div className="flex flex-col grow bg-secondary-theme overflow-hidden relative">
       <CustomButton
@@ -517,7 +541,7 @@ export default function ChatSpace() {
                         index !== 0
                       }
                       handleRespondInitialQuestion={
-                        handleAnswerInitialQuestions
+                        () => {}
                       }
                     />
                   );
@@ -534,6 +558,26 @@ export default function ChatSpace() {
                   );
                 }
               })}
+              {
+                showBotMessageLoader &&
+                <BotMessageComponent
+                  index={-1}
+                  msg={''}
+                  isImage={false}
+                  isBotMessageLoading={true}
+                  // isLatest = {index === chatData?.length -1}
+                  userMessageRef={
+                    null
+                  }
+                  handleAnimFinished={handleAnimFinished}
+                  showTypeWriterAnimation={
+                    false
+                  }
+                  handleRespondInitialQuestion={
+                    () => {}
+                  }
+                />
+              }
           </div>
         </>
       ) : (
@@ -565,6 +609,7 @@ export default function ChatSpace() {
               userMessageRef?.current?.scrollIntoView({
                 behavior: "smooth",
               });
+              // handleAnswerInitialQuestions(formik.values.query)
             }}
           >
             <KeyboardArrowDown />
@@ -578,7 +623,7 @@ export default function ChatSpace() {
             rightIcon={
               <CustomButton
                 type="submit"
-                disabled={!initialQuestionsCompleted}
+                disabled={formik.isSubmitting}
                 buttonStyles={{
                   border: "none",
                   ":hover": {
@@ -593,7 +638,7 @@ export default function ChatSpace() {
                 }
               />
             }
-            disabled={!initialQuestionsCompleted}
+            disabled={formik.isSubmitting}
             placeholder="Ask anything!"
             type={"text"}
             inputStyles={{
