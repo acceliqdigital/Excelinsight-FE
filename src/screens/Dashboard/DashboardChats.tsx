@@ -261,18 +261,25 @@ export default function ChatSpace() {
     },
     enableReinitialize: true,
     onSubmit: (values) => {
+      if(!values.query)
+        return
       console.log(initialQuestionsCompleted, 'complrter')
       if(initialQuestionsCompleted){
         handleSubmitMessage(values.query);
+        formik.setSubmitting(false)
+
       } else {
-        const botMessage = chatData.filter(data => data.sender == 'bot')
+        console.log('disabling input')
         formik.setSubmitting(true)
-        formik.resetForm()
+        const botMessage = chatData.filter(data => data.sender == 'bot')
+        formik.setFieldValue('query', '')
         setShowBotMessageLoader(true);
         handleAnswerInitialQuestions(formik.values.query, botMessage[botMessage.length-1].meta.questionId).then(() => {
         }).finally(() => {
           setShowBotMessageLoader(false);
           formik.setSubmitting(false)
+          console.log('enabling input')
+
         })
       }
     },
@@ -479,7 +486,7 @@ export default function ChatSpace() {
   const handleAnimFinished = useCallback(() => {
     setShowTypewriterAnimation(false);
   }, []);
-  console.log(chatData)
+  console.log(chatData, formik.isSubmitting)
   return (
     <div className="flex flex-col grow bg-secondary-theme overflow-hidden relative">
       <CustomButton
