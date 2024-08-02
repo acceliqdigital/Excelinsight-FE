@@ -78,10 +78,17 @@ export default function Upload() {
             "file_4",
             values.supplementaryFiles[0] ? values.supplementaryFiles[0] : "null"
           );
-          formData.append(
-            "file_5",
-            values.supplementaryFiles[1] ? values.supplementaryFiles[1] : "null"
-          );
+          if(values.supplementaryFiles[1]) {
+            formData.append(
+              "file_5",
+              values.supplementaryFiles[1]
+            );
+          } else {
+            formData.append(
+              "file_5",
+              ''
+            );
+          }
 
           const response = await postData<GenericObjectInterface>(
             headers,
