@@ -31,6 +31,7 @@ import {
   setMediaDirectory,
 } from "@/redux/reducers/chatReducer";
 import { ApiStatusCodes } from "@/utilities";
+import { handleGlobalErrorNetwork } from "@/utilities/helper";
 
 export default function Upload() {
   const dispatch = useDispatch();
@@ -114,7 +115,7 @@ export default function Upload() {
             showWarningMessage("Error while uploading your files.");
           }
         } catch (error) {
-          showErrorMessage(error);
+          handleGlobalErrorNetwork(error)
         } finally {
           setSubmitting(false);
         }

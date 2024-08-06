@@ -5,4 +5,5 @@ export const ApiStatusCodes = {
 	INTERNAL_SERVER_ERROR: 500, // generic internal server error
 	UNAUTHORIZED: 401, // authorization error
 	FORBIDDEN: 403, // authorization error
+	SERVER_ERROR: 500
 }
