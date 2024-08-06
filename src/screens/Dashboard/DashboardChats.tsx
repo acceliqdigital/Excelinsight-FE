@@ -261,8 +261,10 @@ export default function ChatSpace() {
     },
     enableReinitialize: true,
     onSubmit: (values) => {
-      if(!values.query)
+      if(!values.query){
+        formik.setSubmitting(false)
         return
+      }
       console.log(initialQuestionsCompleted, 'complrter')
       if(initialQuestionsCompleted){
         handleSubmitMessage(values.query);
