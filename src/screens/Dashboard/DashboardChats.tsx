@@ -105,7 +105,7 @@ const BotMessageComponent = ({
           >
             <TypeWriterUI
               botResponse={msg}
-              delay={30}
+              delay={0}
               handleAnimationFinished={handleAnimFinished}
               textClass={`font-medium`}
             />
@@ -142,11 +142,7 @@ const BotMessageComponent = ({
                     height: "30px",
                     textTransform: "capitalize",
                   }}
-                  handleClick={useCallback(
-                    () =>
-                      handleRespondInitialQuestion(true, metaData.questionId),
-                    []
-                  )}
+                  handleClick={() => handleRespondInitialQuestion(true, metaData.questionId)}
                 />
                 <CustomButton
                   btnChild="No"
@@ -160,11 +156,7 @@ const BotMessageComponent = ({
                     height: "30px",
                     textTransform: "capitalize",
                   }}
-                  handleClick={useCallback(
-                    () =>
-                      handleRespondInitialQuestion(false, metaData.questionId),
-                    []
-                  )}
+                  handleClick={() => handleRespondInitialQuestion(false, metaData.questionId)}
                 />
               </div>
             </>
@@ -232,6 +224,7 @@ const SampleQuestionsCards = ({
     </button>
   );
 };
+SampleQuestionsCards
 
 export default function ChatSpace() {
   const navigate = useNavigate();
@@ -269,7 +262,6 @@ export default function ChatSpace() {
       if(initialQuestionsCompleted){
         handleSubmitMessage(values.query);
         formik.setSubmitting(false)
-
       } else {
         console.log('disabling input')
         formik.setSubmitting(true)
@@ -297,6 +289,9 @@ export default function ChatSpace() {
       userMessageRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chatData, showScrollToBottomButton]);
+
+  const initialQuestionIterator = useRef<number>(0)
+  const isClarificationQuestion = useRef<boolean>(false)
 
   const handleStartQuestioning = async () => {
     setInitialQuestionLoading(true);
@@ -337,6 +332,7 @@ export default function ChatSpace() {
         }, 500);
       }
     } catch (error) {
+      console.log(error)
     } finally {
       setInitialQuestionLoading(false);
     }
@@ -344,10 +340,10 @@ export default function ChatSpace() {
 
   const handleAnswerInitialQuestions = async (
     reply: string,
-    qestionId: string
+    questionId: string
   ) => {
     const isLastQuestion =
-      initialQuestions?.findIndex((item) => item?.questionid === qestionId) ===
+      initialQuestions?.findIndex((item) => item?.questionid === questionId) ===
       initialQuestions?.length - 1;
 
     setChatData((prev) => [
@@ -364,79 +360,95 @@ export default function ChatSpace() {
         Authorization: `Token ${userToken}`,
       };
       const data = {
-        questionid: qestionId,
+        questionid: questionId,
         process_query: reply,
+        ques_initial: !isClarificationQuestion.current
       };
-      await postData(
+      const questionLLMResponse = await postData<GenericObjectInterface>(
         headerList,
         data,
         `${API_END_POINTS.EXCEL_QUESTIONS}?sessionid=${chatSessionId}`
       );
+      console.log(questionLLMResponse.data, 'llm response')
       if (!isLastQuestion) {
-        setTimeout(() => {
+        if(questionLLMResponse.data.next_question == true){
+          setTimeout(() => {
+            initialQuestionIterator.current++
+            isClarificationQuestion.current = false
+            setChatData((prev) => {
+              return [
+                ...prev,
+                {
+                  id: chatData?.length + 1,
+                  sender: mapSender.BOT,
+                  message: `${initialQuestions[initialQuestionIterator.current]?.question}`,
+                  meta: {
+                    type: initialQuestionsType,
+                    questionId: initialQuestions[initialQuestionIterator.current]?.questionid,
+                  },
+                },
+              ]
+            });
+          }, 500);
+        } else {
+          setTimeout(() => {
+            isClarificationQuestion.current = true
+            setChatData((prev) => {
+              return [
+                ...prev,
+                {
+                  id: chatData?.length + 1,
+                  sender: mapSender.BOT,
+                  message: `${questionLLMResponse.data.llmresponse}`,
+                  meta: {
+                    type: initialQuestionsType,
+                    questionId: initialQuestions[initialQuestionIterator.current]?.questionid,
+                  },
+                },
+              ]
+            });
+          }, 500);
+        }
+      } else {
+        
+        if(questionLLMResponse.data.next_question == true){
+          setInitialQuestionsCompleted(true);
+          setShowBotMessageLoader(undefined)
+          initialQuestionIterator.current++
+          isClarificationQuestion.current = false
           setChatData((prev) => [
             ...prev,
             {
               id: chatData?.length + 1,
               sender: mapSender.BOT,
-              message: `${initialQuestions[prev?.length / 2]?.question}`,
-              meta: {
-                type: initialQuestionsType,
-                questionId: initialQuestions[prev?.length / 2]?.questionid,
-              },
-            },
-          ]);
-        }, 500);
-      } else {
-        setInitialQuestionsCompleted(true);
-        setShowBotMessageLoader(undefined)
-        setChatData((prev) => [
-          ...prev,
-          {
-            id: chatData?.length + 1,
-            sender: mapSender.BOT,
-            message: `Clarification question completed please ask, any further queries...`,
-          }
-        ])
+              message: `Clarification question completed please ask, any further queries...`,
+            }
+          ])
+        } else {
+          setTimeout(() => {
+            isClarificationQuestion.current = true
+            setChatData((prev) => {
+              return [
+                ...prev,
+                {
+                  id: chatData?.length + 1,
+                  sender: mapSender.BOT,
+                  message: `${questionLLMResponse.data.llmresponse}`,
+                  meta: {
+                    type: initialQuestionsType,
+                    questionId: initialQuestions[initialQuestionIterator.current]?.questionid,
+                  },
+                },
+              ]
+            });
+          }, 500);
+        }
       }
     } catch (error) {
       // console.log(error)
     }
   };
-
-  const handleSubmitMessage = useCallback(
-    (query: string) => {
-      if (query?.length > 0) {
-        formik.setFieldValue("query", "");
-        initializeMessage(query);
-      }
-    },
-    [chatData]
-  );
-
-  const initializeMessage = (message: string) => {
-    setChatData((prevData) => [
-      ...prevData,
-      {
-        id: chatData?.length + 1,
-        sender: mapSender.USER,
-        message: `${message}`,
-      },
-    ]);
-    setTimeout(() => {
-      setChatData((prevData) => [
-        ...prevData,
-        {
-          id: chatData?.length + 1,
-          sender: mapSender.BOT,
-          message: "",
-        },
-      ]);
-      sendMessageAPI(message);
-    }, 500);
-  };
-
-  const sendMessageAPI = async (message: string) => {
+  const sendMessageAPI = useCallback(async (message: string) => {
     setBotMessageLoading(true);
     try {
       const data = {
@@ -469,7 +481,7 @@ export default function ChatSpace() {
           isImage: response?.data?.llmresponse?.is_plot,
         },
       ]);
-    } catch (error: any) {
+    } catch (error) {
       console.log(error, "error");
 
       setChatData((prevData) => [
@@ -483,12 +495,44 @@ export default function ChatSpace() {
     } finally {
       setBotMessageLoading(false);
     }
-  };
+  },[chatSessionId, userToken]);
+  
+  const initializeMessage = useCallback((message: string) => {
+    setChatData((prevData) => [
+      ...prevData,
+      {
+        id: chatData?.length + 1,
+        sender: mapSender.USER,
+        message: `${message}`,
+      },
+    ]);
+    setTimeout(() => {
+      setChatData((prevData) => [
+        ...prevData,
+        {
+          id: chatData?.length + 1,
+          sender: mapSender.BOT,
+          message: "",
+        },
+      ]);
+      sendMessageAPI(message);
+    }, 500);
+  }, [chatData?.length, sendMessageAPI]);
+
+  const handleSubmitMessage = useCallback(
+    (query: string) => {
+      if (query?.length > 0) {
+        formik.setFieldValue("query", "");
+        initializeMessage(query);
+      }
+    },
+    [formik, initializeMessage]
+  );
 
   const handleAnimFinished = useCallback(() => {
     setShowTypewriterAnimation(false);
   }, []);
-  console.log(chatData, formik.isSubmitting)
+  console.log(chatData)
   return (
     <div className="flex flex-col grow bg-secondary-theme overflow-hidden relative">
       <CustomButton
@@ -507,7 +551,7 @@ export default function ChatSpace() {
         }}
         handleClick={useCallback(() => {
           navigate(`${routes.UPLOAD}`);
-        }, [])}
+        }, [navigate])}
         btnChild="Next >"
       />
       {chatData?.length > 0 ? (
@@ -530,6 +574,7 @@ export default function ChatSpace() {
                 if (item.sender === mapSender.BOT) {
                   return (
                     <BotMessageComponent
+                      key={`bot-${index}`}
                       index={index}
                       msg={item.message}
                       isImage={item?.isImage}
@@ -558,6 +603,7 @@ export default function ChatSpace() {
                   return (
                     <UserMessageComponent
                       index={index}
+                      key={`user-${index}`}
                       msg={item.message}
                       //   userImg={userSampleImage as string}
                       userMessageRef={

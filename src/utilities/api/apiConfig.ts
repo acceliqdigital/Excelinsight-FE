@@ -10,8 +10,9 @@ let BASE_URL = "";
 // BASE_URL = 'http://10.44.22.83:8008/'
 // BASE_URL = "http://localhost:8008/";
 if (import.meta.env.DEV) {
-    // BASE_URL = 'http://10.44.30.67:8008/'
-  BASE_URL = "http://localhost:8008/";
+  // BASE_URL = "http://localhost:8008/";
+  // Inder IP
+  BASE_URL = 'http://10.44.25.12:8008/'
 } else {
   //   BASE_URL = 'http://10.44.17.18:8001/'
   BASE_URL = "http://localhost:8008/";
